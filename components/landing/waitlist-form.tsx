@@ -114,7 +114,7 @@ export function WaitlistForm({ className, layout, source }: WaitlistFormProps) {
         : "text-amber-300";
   const fieldClassName =
     source === "hero"
-      ? "w-full rounded-none border border-blue-500 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-blue-600"
+      ? "w-full rounded-none border border-[var(--color-background)] bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-[var(--color-background)]"
       : "w-full rounded-none border border-white/15 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-[var(--color-accent)]";
   const fieldLayoutClassName =
     layoutMode === "stacked"

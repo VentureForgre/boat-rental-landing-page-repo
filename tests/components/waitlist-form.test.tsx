@@ -34,10 +34,10 @@ describe("WaitlistForm", () => {
     expect(document.querySelector('[aria-live="polite"]')).toBeNull();
     expect(
       screen.getByRole("combobox", { name: /select your lake/i }),
-    ).toHaveClass("border-blue-500");
+    ).toHaveClass("border-[var(--color-background)]");
     expect(
       screen.getByRole("textbox", { name: /ready to book/i }),
-    ).toHaveClass("border-blue-500");
+    ).toHaveClass("border-[var(--color-background)]");
 
     fireEvent.change(screen.getByRole("textbox", { name: /ready to book/i }), {
       target: { value: "not-an-email" },
