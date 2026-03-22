@@ -51,7 +51,15 @@ export function LakesSection() {
   );
 
   return (
-    <section className="mx-auto max-w-7xl px-6 py-24 lg:px-8 lg:py-32" id="lakes">
+    <section
+      className="relative mx-auto max-w-7xl px-6 py-24 lg:px-8 lg:py-32"
+      id="lakes"
+    >
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 top-0 h-32 -translate-y-full bg-gradient-to-b from-transparent via-[rgba(10,18,30,0.7)] to-[var(--color-background)]"
+        data-testid="lakes-fade-transition"
+      />
       <div className="mb-16 flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
         <div className="max-w-2xl space-y-4">
           <p className="eyebrow">{landingPageContent.lakesSection.eyebrow}</p>
