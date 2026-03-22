@@ -61,6 +61,9 @@ export type WaitlistSurface = {
   title?: string;
 };
 
+const currentYear = new Date().getFullYear();
+const launchSeason = `Summer ${currentYear}`;
+
 export const navigationItems = [
   { href: "#experience", label: "Experience" },
   { href: "#lakes", label: "Georgia Lakes" },
@@ -141,7 +144,7 @@ export const featuredLakes = [
     headlineTag: "Savannah River Basin",
     id: "j-strom-thurmond-lake",
     imageSrc:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuA0T4Z2ypI0eBJgupQzvWlIf9-gSx5gm0BwhAWYj_KtpY-y0v_BoTq3Rta3qv4YFs0lefLx8FfMKr-HfmmTnqPjLcd6h6qBtiK79HlomyqG4oe1LYK0NBRSl6pbyNkn9XOMJtZP5CWruiMrzrxeqwyoftuto_9ZtvVtL9HAsjZF0ZXAXOsoD7tKqlsrJeIZ0vpHxHKncvmnHEEvSdP4mVGUnvzN4YzEA_nmWPiazYz2rXCXiwCgsuGbR_9ZaOQnxK4KuPpSl0g70so_",
+      "https://images.pexels.com/photos/5151427/pexels-photo-5151427.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=900&w=1600",
     name: "J. Strom Thurmond Lake",
     region: "Eastern Georgia",
   },
@@ -151,7 +154,7 @@ export const featuredLakes = [
     headlineTag: "Southern Georgia",
     id: "walter-f-george-lake",
     imageSrc:
-      "https://lh3.googleusercontent.com/aida/ADBb0uj9GLEYUkyFJ9PvFbIxKFUjL1SxrfKsd0j5tsfKsCuV8J0pM9HzC2SvC8C-P072qHnPYGiKcV1HXRxjEEriXjIK-KGjdN2Io7UhQen_YrDPQAUhepITRSk8JhaNwsMQbHfJxAV2cwP4vV13L8NynZCOXi13XCSb-grbCJDmiAcr4wKbpMLaiyrRlqpjZODBvSZbqa42Qg2_sKiuz-vMYyDszQBZNCauj1vqFNkTs_0kb4pZvLO7bWPdp176VTuZeqfFpDwCseJykro",
+      "https://images.pexels.com/photos/36141966/pexels-photo-36141966.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=900&w=1600",
     name: "Walter F. George Lake",
     region: "Southern Georgia",
   },
@@ -174,7 +177,7 @@ export const benefitCards = [
     description:
       "Secure your spot now for our inaugural season of luxury charters.",
     icon: "verified",
-    title: "Coming Summer 2025",
+    title: `Coming ${launchSeason}`,
   },
   {
     description:
@@ -231,18 +234,18 @@ export const landingPageContent = {
     title: "Concierge",
   },
   destinationsHeading: "Destinations",
-  footerCopyright: "\u00A9 2024 Luxe Lake Escapes, All Rights Reserved",
+  footerCopyright: `\u00A9 ${currentYear} Luxe Lake Escapes, All Rights Reserved`,
   hero: {
     description:
       "Experience unparalleled luxury on Georgia's most prestigious waters. Join our exclusive waitlist for priority access to our artisan-crafted yachts and professional captains.",
-    eyebrow: "Coming Summer 2025",
+    eyebrow: `Coming ${launchSeason}`,
     headline: "The Art of Inland Sailing",
     headlineAccent: "Inland Sailing",
     primaryAction: { href: "#waitlist", label: "Join Waitlist" },
   },
   lakesSection: {
     body:
-      "We are currently gauging real demand to finalize our Summer 2025 launch fleet locations.",
+      `We are currently gauging real demand to finalize our ${launchSeason} launch fleet locations.`,
     cta: { href: "#waitlist", label: "Explore Fleet" },
     eyebrow: "Our Launch Markets",
     title: "Explore Georgia's Premier Shores",

@@ -27,6 +27,8 @@ const { metadata } = await import("@/app/layout");
 const { default: RootLayout } = await import("@/app/layout");
 
 describe("Landing page composition", () => {
+  const currentYear = new Date().getFullYear();
+
   it("renders the expected sections, lakes, and waitlist surfaces", () => {
     render(<HomePage />);
 
@@ -79,9 +81,17 @@ describe("Landing page composition", () => {
       }),
     ).toBeInTheDocument();
     expect(screen.getByText(/concierge@luxelake\.com/i)).toBeInTheDocument();
-    expect(screen.getByText(/primary market • launch priority/i)).toBeInTheDocument();
+    expect(screen.getByText(/primary market .* launch priority/i)).toBeInTheDocument();
     expect(
-      screen.getByText(/© 2024 luxe lake escapes, all rights reserved/i),
+      screen.getByText(
+        new RegExp(`${currentYear} luxe lake escapes, all rights reserved`, "i"),
+      ),
+    ).toBeInTheDocument();
+    expect(
+      screen.getAllByText(new RegExp(`coming summer ${currentYear}`, "i")),
+    ).toHaveLength(2);
+    expect(
+      screen.getByText(new RegExp(`summer ${currentYear} launch fleet locations`, "i")),
     ).toBeInTheDocument();
     expect(screen.getAllByRole("combobox", { name: /select your lake/i })).toHaveLength(2);
     expect(
