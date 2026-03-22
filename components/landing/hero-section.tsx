@@ -26,7 +26,7 @@ export function HeroSection() {
         <div className="absolute inset-0 bg-[rgba(10,18,30,0.58)]" />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[rgba(10,18,30,0.2)] to-[var(--color-background)]" />
         <div
-          className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent via-[rgba(10,18,30,0.82)] to-[#161d28]"
+          className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent via-[rgba(10,18,30,0.82)] to-[var(--color-background)]"
           data-testid="hero-fade-transition"
         />
       </div>
