@@ -150,7 +150,8 @@ Detailed execution plan created below. The generic Implementation placeholder ha
   - Ten top-level issues exist under this milestone
   - Titles are action-oriented and scoped to landing-page build, test, or deployment work only
 
-### [ ] Step: Seed the "Waitlist Landing Page Live And Verified" issue batch
+### [x] Step: Seed the "Waitlist Landing Page Live And Verified" issue batch
+<!-- chat-id: c222bd56-6be8-4717-b9e5-6ea8a7daef55 -->
 
 - Contracts:
   - Launch readiness scope in `{@artifacts_path}/requirements.md`
