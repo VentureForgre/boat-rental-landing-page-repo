@@ -2,8 +2,10 @@
 
 import { useId, useState, type FormEvent } from "react";
 import {
+  type LakeId,
   lakeOptions,
   waitlistSurfaceContent,
+  type WaitlistSurface,
   type WaitlistSource,
 } from "@/content/landing-page";
 import {
@@ -31,11 +33,13 @@ async function readResponseMessage(response: Response): Promise<WaitlistResponse
 }
 
 export function WaitlistForm({ className, source }: WaitlistFormProps) {
-  const surface = waitlistSurfaceContent[source];
+  const surface: WaitlistSurface = waitlistSurfaceContent[source];
   const emailId = useId();
   const lakeId = useId();
+  const emailErrorId = useId();
+  const lakeErrorId = useId();
   const [email, setEmail] = useState("");
-  const [preferredLake, setPreferredLake] = useState(surface.defaultLakeId);
+  const [preferredLake, setPreferredLake] = useState<LakeId>(surface.defaultLakeId);
   const [status, setStatus] = useState<SubmissionState>("idle");
   const [message, setMessage] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<WaitlistFieldErrors>({});
@@ -71,8 +75,10 @@ export function WaitlistForm({ className, source }: WaitlistFormProps) {
       const payload = await readResponseMessage(response);
 
       if (!response.ok || !payload.ok) {
+        const fieldErrors = !payload.ok ? payload.fieldErrors ?? {} : {};
+
         setStatus("error");
-        setFieldErrors(payload.fieldErrors ?? {});
+        setFieldErrors(fieldErrors);
         setMessage(payload.message);
         return;
       }
@@ -85,6 +91,25 @@ export function WaitlistForm({ className, source }: WaitlistFormProps) {
       setMessage("We could not process your request. Please try again.");
     }
   }
+
+  const emailDescribedBy = fieldErrors.email ? emailErrorId : undefined;
+  const lakeDescribedBy = fieldErrors.preferredLake ? lakeErrorId : undefined;
+  const messageRole =
+    status === "success" ? "status" : status === "error" && message ? "alert" : undefined;
+  const labelClassName =
+    source === "hero"
+      ? "block text-xs font-semibold uppercase tracking-[0.2em] text-slate-400"
+      : "block text-xs font-semibold uppercase tracking-[0.2em] text-slate-200";
+  const fieldErrorClassName =
+    source === "hero" ? "text-sm text-amber-700" : "text-sm text-amber-300";
+  const formMessageClassName =
+    status === "success"
+      ? source === "hero"
+        ? "text-emerald-700"
+        : "text-emerald-300"
+      : source === "hero"
+        ? "text-amber-700"
+        : "text-amber-300";
 
   return (
     <form
@@ -102,17 +127,16 @@ export function WaitlistForm({ className, source }: WaitlistFormProps) {
       ) : null}
       <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto]">
         <div className="space-y-2">
-          <label
-            className="block text-xs font-semibold uppercase tracking-[0.2em] text-slate-200"
-            htmlFor={lakeId}
-          >
+          <label className={labelClassName} htmlFor={lakeId}>
             {surface.lakeLabel}
           </label>
           <select
+            aria-describedby={lakeDescribedBy}
+            aria-invalid={fieldErrors.preferredLake ? true : undefined}
             className="w-full rounded-none border border-white/15 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-[var(--color-accent)]"
             id={lakeId}
             name="preferredLake"
-            onChange={(event) => setPreferredLake(event.target.value)}
+            onChange={(event) => setPreferredLake(event.target.value as LakeId)}
             value={preferredLake}
           >
             {lakeOptions.map((lake) => (
@@ -122,18 +146,19 @@ export function WaitlistForm({ className, source }: WaitlistFormProps) {
             ))}
           </select>
           {fieldErrors.preferredLake ? (
-            <p className="text-sm text-amber-300">{fieldErrors.preferredLake}</p>
+            <p className={fieldErrorClassName} id={lakeErrorId}>
+              {fieldErrors.preferredLake}
+            </p>
           ) : null}
         </div>
         <div className="space-y-2">
-          <label
-            className="block text-xs font-semibold uppercase tracking-[0.2em] text-slate-200"
-            htmlFor={emailId}
-          >
+          <label className={labelClassName} htmlFor={emailId}>
             {surface.emailLabel}
           </label>
           <input
             autoComplete="email"
+            aria-describedby={emailDescribedBy}
+            aria-invalid={fieldErrors.email ? true : undefined}
             className="w-full rounded-none border border-white/15 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-[var(--color-accent)]"
             id={emailId}
             name="email"
@@ -143,11 +168,13 @@ export function WaitlistForm({ className, source }: WaitlistFormProps) {
             value={email}
           />
           {fieldErrors.email ? (
-            <p className="text-sm text-amber-300">{fieldErrors.email}</p>
+            <p className={fieldErrorClassName} id={emailErrorId}>
+              {fieldErrors.email}
+            </p>
           ) : null}
         </div>
         <button
-          className="inline-flex items-center justify-center bg-[var(--color-ink)] px-6 py-3 text-xs font-semibold uppercase tracking-[0.2em] text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-70"
+          className="inline-flex items-center justify-center bg-[var(--color-background)] px-6 py-3 text-xs font-semibold uppercase tracking-[0.2em] text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-70"
           disabled={status === "loading"}
           type="submit"
         >
@@ -156,7 +183,7 @@ export function WaitlistForm({ className, source }: WaitlistFormProps) {
       </div>
       <div aria-live="polite" className="min-h-6 text-sm">
         {message ? (
-          <p className={status === "success" ? "text-emerald-300" : "text-amber-300"}>
+          <p className={formMessageClassName} role={messageRole}>
             {message}
           </p>
         ) : null}

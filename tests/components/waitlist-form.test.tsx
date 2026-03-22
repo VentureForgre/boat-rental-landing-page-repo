@@ -40,6 +40,9 @@ describe("WaitlistForm", () => {
     expect(
       await screen.findByText(/enter a valid email address/i),
     ).toBeInTheDocument();
+    expect(screen.getByRole("alert")).toHaveTextContent(
+      /please fix the highlighted fields and try again/i,
+    );
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
@@ -103,5 +106,8 @@ describe("WaitlistForm", () => {
     expect(
       await screen.findByText(/you are on the luxe lake waitlist/i),
     ).toBeInTheDocument();
+    expect(screen.getByRole("status")).toHaveTextContent(
+      /you are on the luxe lake waitlist/i,
+    );
   });
 });

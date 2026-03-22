@@ -175,7 +175,8 @@ Detailed execution plan created below. The generic Implementation placeholder ha
   - `npm run lint`
   - `npm run test`
 
-### [ ] Step: Build the landing-page sections and compose the root route
+### [x] Step: Build the landing-page sections and compose the root route
+<!-- chat-id: e0a29355-ad5a-4277-973e-42f1f1c48041 -->
 
 - Contracts:
   - Required page structure and lake-market emphasis in `{@artifacts_path}/requirements.md`
@@ -203,8 +204,16 @@ Detailed execution plan created below. The generic Implementation placeholder ha
   - `tests/components/landing-page.test.tsx`
   - `npm run lint`
   - `npm run test`
+- Completed:
+  - Replaced the placeholder root route with a composed landing page built from focused section components for the header, hero, lakes grid, benefits, CTA, and footer.
+  - Wired both waitlist capture surfaces to the shared `WaitlistForm` contract while preserving the supplied same-page navigation structure and Georgia-market content hierarchy.
+- Verification passed:
+  - `npm run test -- tests/app/page.test.tsx tests/components/landing-page.test.tsx`
+  - `npm run lint`
+  - `npm run test`
 
-### [ ] Step: Polish responsive behavior, accessibility, and production-readiness details
+### [x] Step: Polish responsive behavior, accessibility, and production-readiness details
+<!-- chat-id: 3b9ac564-9e22-4b0c-b562-f107b2c51d99 -->
 
 - Contracts:
   - Responsiveness and accessibility requirements in `{@artifacts_path}/requirements.md`
@@ -227,6 +236,15 @@ Detailed execution plan created below. The generic Implementation placeholder ha
   - `npm run test`
   - `npm run build`
   - Manual responsive QA in the browser at mobile and desktop widths
+- Completed:
+  - Added baseline SEO metadata, a keyboard skip link, stronger focus-visible states, and a mobile navigation dialog so navigation and calls to action remain usable on smaller screens.
+  - Improved waitlist accessibility with explicit live-region roles, field-level `aria-invalid` and `aria-describedby` wiring, and surface-specific contrast adjustments for the hero waitlist panel.
+  - Polished responsive presentation details including tighter mobile hero spacing, rounded lake cards, improved footer heading hierarchy, and corrected garbled display copy in the shared content model.
+- Verification passed:
+  - `npm run lint`
+  - `npm run test`
+  - `npm run build`
+  - Manual responsive QA with Playwright screenshots against a local production server on phone and desktop viewports
 
 ### [ ] Step: Final verification, branch hygiene, and pull request handoff
 

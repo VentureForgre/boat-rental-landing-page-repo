@@ -91,7 +91,7 @@ export function validateWaitlistSubmission(
     data: {
       email,
       preferredLake: preferredLake as LakeId,
-      source,
+      source: source as WaitlistSource,
     },
   };
 }

@@ -108,7 +108,7 @@ export const featuredLakes = [
     alt: "Luxury charter boat on Lake Sidney Lanier at golden hour.",
     demandSignal: "High Demand - Early Booking Recommended",
     emphasis: "featured",
-    headlineTag: "Primary Market • Launch Priority",
+    headlineTag: "Primary Market \u2022 Launch Priority",
     id: "lake-sidney-lanier",
     imageSrc:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuDQJ3iMLBr1x7kmFqrYg-Z7jRIZv5OogBZ3TCeDZvV3ScNL4-a3ufUuUIuXFC4HG2Jeqquu2x085Xwo85xIghmbo3N4aZy_mtyInhmRFURuyLCe_ED5s96nhoN-vf8jheXIfKinkZ5jJ4kqpj40Of9XeRRoJx5eb5YcqIHNBpzhpP4_RjCz1hPGrHvnuBXuSb7gWV62sS0r3nmR5mHV-_seUP9SxUwz2vPEC7NL1AmimVH44TF0a_jyM7XzDnTQdWx5z-DQtSPb1cS8",
@@ -231,7 +231,7 @@ export const landingPageContent = {
     title: "Concierge",
   },
   destinationsHeading: "Destinations",
-  footerCopyright: "© 2024 Luxe Lake Escapes, All Rights Reserved",
+  footerCopyright: "\u00A9 2024 Luxe Lake Escapes, All Rights Reserved",
   hero: {
     description:
       "Experience unparalleled luxury on Georgia's most prestigious waters. Join our exclusive waitlist for priority access to our artisan-crafted yachts and professional captains.",
