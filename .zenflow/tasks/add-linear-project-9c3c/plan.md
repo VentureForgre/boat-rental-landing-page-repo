@@ -62,7 +62,8 @@ Save to `{@artifacts_path}/plan.md`.
 
 Detailed execution plan created below. The generic Implementation placeholder has been replaced with concrete Linear setup tasks only; no implementation work is executed in this planning session.
 
-### [ ] Step: Finalize Linear project payload and reusable taxonomy
+### [x] Step: Finalize Linear project payload and reusable taxonomy
+<!-- chat-id: 866ce1cb-7265-4b75-89c0-679e1a325e08 -->
 
 - Contracts:
   - `{@artifacts_path}/requirements.md`
