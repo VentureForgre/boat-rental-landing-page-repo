@@ -104,7 +104,8 @@ Detailed execution plan created below. The generic Implementation placeholder ha
   - Added the in-place Next.js App Router baseline, TypeScript config, Tailwind-compatible global CSS, ESLint flat config, and Vitest test harness without using a destructive scaffold.
   - Verification passed: `npm run lint`, `npm run test`, and `npm run build`.
 
-### [ ] Step: Define shared landing-page content, typography, and visual tokens
+### [x] Step: Define shared landing-page content, typography, and visual tokens
+<!-- chat-id: c28dfdcf-7433-4976-af6d-48679e2da672 -->
 
 - Contracts:
   - Brand and visual positioning requirements in `{@artifacts_path}/requirements.md`
@@ -126,6 +127,14 @@ Detailed execution plan created below. The generic Implementation placeholder ha
 - Verification:
   - Shared content exports cover all five lakes and both waitlist surfaces
   - `tests/content/landing-page.test.ts`
+  - `npm run lint`
+- Completed:
+  - Added `content/landing-page.ts` as the single source of truth for navigation, lakes, benefits, CTA copy, concierge details, and both waitlist surface configs.
+  - Added `components/landing/icons.tsx` with inline SVG replacements for the Material Symbols used by the supplied design.
+  - Updated `app/layout.tsx` to load `Playfair Display` and `Plus Jakarta Sans` through `next/font`, updated `app/globals.css` with reusable nautical color and topo-pattern tokens, and allowed the selected remote image host in `next.config.ts`.
+- Verification passed:
+  - `npm run test -- tests/content/landing-page.test.ts`
+  - `npm run test`
   - `npm run lint`
 
 ### [ ] Step: Implement the shared waitlist contract, API route, and reusable form

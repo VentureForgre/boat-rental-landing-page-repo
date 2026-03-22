@@ -1,5 +1,18 @@
 import type { Metadata } from "next";
+import { Playfair_Display, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
+
+const plusJakartaSans = Plus_Jakarta_Sans({
+  display: "swap",
+  subsets: ["latin"],
+  variable: "--font-sans",
+});
+
+const playfairDisplay = Playfair_Display({
+  display: "swap",
+  subsets: ["latin"],
+  variable: "--font-display",
+});
 
 export const metadata: Metadata = {
   title: "Luxe Lake Escapes",
@@ -12,9 +25,11 @@ type RootLayoutProps = Readonly<{
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html lang="en">
-      <body>{children}</body>
+    <html
+      className={`${plusJakartaSans.variable} ${playfairDisplay.variable}`}
+      lang="en"
+    >
+      <body className="antialiased">{children}</body>
     </html>
   );
 }
-

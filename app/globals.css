@@ -4,6 +4,17 @@
 
 :root {
   color-scheme: dark;
+  --color-background: #0a121e;
+  --color-background-soft: #101927;
+  --color-background-elevated: #132033;
+  --color-foreground: #f7f2ea;
+  --color-muted: #a2adba;
+  --color-muted-strong: #d4d8df;
+  --color-accent: #c1a47e;
+  --color-accent-strong: #a18a6a;
+  --color-border: rgba(255, 255, 255, 0.1);
+  --shadow-luxury: 0 24px 80px rgba(0, 0, 0, 0.35);
+  --topo-pattern: url("data:image/svg+xml,%3Csvg width='800' height='800' viewBox='0 0 800 800' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M100 100C150 150 200 120 250 180S350 220 400 150 500 100 600 200 700 300 750 250' fill='none' stroke='rgba(193, 164, 126, 0.1)' stroke-width='1'/%3E%3Cpath d='M50 200C100 250 150 220 200 280S300 320 350 250 450 200 550 300 650 400 700 350' fill='none' stroke='rgba(193, 164, 126, 0.08)' stroke-width='1'/%3E%3Cpath d='M0 300C50 350 100 320 150 380S250 420 300 350 400 300 500 400 600 500 650 450' fill='none' stroke='rgba(193, 164, 126, 0.05)' stroke-width='1'/%3E%3Cpath d='M200 500C250 550 300 520 350 580S450 620 500 550 600 500 700 600 800 700 850 650' fill='none' stroke='rgba(193, 164, 126, 0.08)' stroke-width='1'/%3E%3C/svg%3E");
 }
 
 * {
@@ -11,11 +22,87 @@
 }
 
 html {
-  font-family: Arial, Helvetica, sans-serif;
+  scroll-behavior: smooth;
 }
 
 body {
   margin: 0;
   min-height: 100vh;
-  background: #020617;
+  background:
+    radial-gradient(
+      circle at top center,
+      rgba(193, 164, 126, 0.16),
+      transparent 28%
+    ),
+    linear-gradient(180deg, #111d2d 0%, var(--color-background) 24%);
+  color: var(--color-foreground);
+  font-family: var(--font-sans), sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.font-display {
+  font-family: var(--font-display), serif;
+  letter-spacing: -0.03em;
+}
+
+::selection {
+  background: var(--color-accent);
+  color: #ffffff;
+}
+
+@layer base {
+  body {
+    text-rendering: optimizeLegibility;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+}
+
+@layer utilities {
+  .bg-nautical-surface {
+    background-color: var(--color-background-soft);
+  }
+
+  .text-muted-luxury {
+    color: var(--color-muted);
+  }
+
+  .text-accent-luxury {
+    color: var(--color-accent);
+  }
+
+  .border-luxury {
+    border-color: var(--color-border);
+  }
+
+  .topo-pattern {
+    background-image: var(--topo-pattern);
+    background-position: center;
+    background-size: cover;
+  }
+
+  .luxury-panel {
+    background:
+      linear-gradient(180deg, rgba(19, 32, 51, 0.88), rgba(10, 18, 30, 0.82)),
+      rgba(16, 25, 39, 0.72);
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-luxury);
+    backdrop-filter: blur(20px);
+  }
+
+  .eyebrow {
+    color: var(--color-accent);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+  }
 }
