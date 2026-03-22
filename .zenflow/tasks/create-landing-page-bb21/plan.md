@@ -62,7 +62,8 @@ Save to `{@artifacts_path}/plan.md`.
 
 Detailed execution plan created below. The generic Implementation placeholder has been replaced with concrete landing-page delivery tasks only; no application code, install/build command, or PR work is executed in this planning session.
 
-### [ ] Step: Establish repository hygiene and the Next.js baseline
+### [x] Step: Establish repository hygiene and the Next.js baseline
+<!-- chat-id: 6ea99bca-687c-49e9-a4ce-b336303a1cdb -->
 
 - Contracts:
   - `{@artifacts_path}/requirements.md`
@@ -99,6 +100,9 @@ Detailed execution plan created below. The generic Implementation placeholder ha
   - `npm run lint`
   - `npm run test`
   - `npm run build`
+- Completed:
+  - Added the in-place Next.js App Router baseline, TypeScript config, Tailwind-compatible global CSS, ESLint flat config, and Vitest test harness without using a destructive scaffold.
+  - Verification passed: `npm run lint`, `npm run test`, and `npm run build`.
 
 ### [ ] Step: Define shared landing-page content, typography, and visual tokens
 
