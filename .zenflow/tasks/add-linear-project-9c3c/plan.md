@@ -126,7 +126,8 @@ Detailed execution plan created below. The generic Implementation placeholder ha
   - Five top-level issues exist under this milestone
   - Every issue is attached to the project and milestone with no `parentId`
 
-### [ ] Step: Seed the "Waitlist Landing Page Ready For Production" issue batch
+### [x] Step: Seed the "Waitlist Landing Page Ready For Production" issue batch
+<!-- chat-id: b46937e0-14a4-4cdb-8c20-bbfa4fbbc64c -->
 
 - Contracts:
   - Waitlist Landing Page scope in `{@artifacts_path}/requirements.md`
