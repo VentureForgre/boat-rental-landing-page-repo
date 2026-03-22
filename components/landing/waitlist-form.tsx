@@ -112,6 +112,10 @@ export function WaitlistForm({ className, layout, source }: WaitlistFormProps) {
       : source === "hero"
         ? "text-amber-700"
         : "text-amber-300";
+  const fieldClassName =
+    source === "hero"
+      ? "w-full rounded-none border border-blue-500 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-blue-600"
+      : "w-full rounded-none border border-white/15 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-[var(--color-accent)]";
   const fieldLayoutClassName =
     layoutMode === "stacked"
       ? "grid gap-4"
@@ -143,7 +147,7 @@ export function WaitlistForm({ className, layout, source }: WaitlistFormProps) {
           <select
             aria-describedby={lakeDescribedBy}
             aria-invalid={fieldErrors.preferredLake ? true : undefined}
-            className="w-full rounded-none border border-white/15 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-[var(--color-accent)]"
+            className={fieldClassName}
             id={lakeId}
             name="preferredLake"
             onChange={(event) => setPreferredLake(event.target.value as LakeId)}
@@ -169,7 +173,7 @@ export function WaitlistForm({ className, layout, source }: WaitlistFormProps) {
             autoComplete="email"
             aria-describedby={emailDescribedBy}
             aria-invalid={fieldErrors.email ? true : undefined}
-            className="w-full rounded-none border border-white/15 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-[var(--color-accent)]"
+            className={fieldClassName}
             id={emailId}
             name="email"
             onChange={(event) => setEmail(event.target.value)}
@@ -191,13 +195,11 @@ export function WaitlistForm({ className, layout, source }: WaitlistFormProps) {
           {status === "loading" ? "Submitting..." : surface.submitLabel}
         </button>
       </div>
-      <div aria-live="polite" className="min-h-6 text-sm">
-        {message ? (
-          <p className={formMessageClassName} role={messageRole}>
-            {message}
-          </p>
-        ) : null}
-      </div>
+      {message ? (
+        <p className={`${formMessageClassName} text-sm`} role={messageRole}>
+          {message}
+        </p>
+      ) : null}
     </form>
   );
 }

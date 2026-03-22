@@ -1,7 +1,10 @@
 import Image from "next/image";
-import { landingPageContent, featuredLakes } from "@/content/landing-page";
+import { landingPageContent } from "@/content/landing-page";
 import { WaitlistForm } from "@/components/landing/waitlist-form";
 import { SiteHeader } from "@/components/landing/site-header";
+
+const heroImageSrc =
+  "https://lh3.googleusercontent.com/aida-public/AB6AXuA0T4Z2ypI0eBJgupQzvWlIf9-gSx5gm0BwhAWYj_KtpY-y0v_BoTq3Rta3qv4YFs0lefLx8FfMKr-HfmmTnqPjLcd6h6qBtiK79HlomyqG4oe1LYK0NBRSl6pbyNkn9XOMJtZP5CWruiMrzrxeqwyoftuto_9ZtvVtL9HAsjZF0ZXAXOsoD7tKqlsrJeIZ0vpHxHKncvmnHEEvSdP4mVGUnvzN4YzEA_nmWPiazYz2rXCXiwCgsuGbR_9ZaOQnxK4KuPpSl0g70so_";
 
 export function HeroSection() {
   return (
@@ -17,7 +20,7 @@ export function HeroSection() {
           height={1440}
           loading="eager"
           priority
-          src={featuredLakes[3].imageSrc}
+          src={heroImageSrc}
           width={2200}
         />
         <div className="absolute inset-0 bg-[rgba(10,18,30,0.58)]" />
