@@ -18,7 +18,10 @@ Do not make assumptions on important decisions — get clarification first.
 
 ## Workflow Steps
 
-### [ ] Step: Implementation
+### [x] Step: Implementation
+<!-- chat-id: 1f6c565a-8abd-4da7-9647-8163b919b5d3 -->
+
+Add a repository README that explains this project as the dedicated codebase for the Georgia boat-rental waitlist landing page. Focus the document on the landing page's role in validating demand, capturing lake-specific interest, and defining what is in and out of scope for this repo.
 
 **Debug requests, questions, and investigations:** answer or investigate first. Do not create a plan upfront — the user needs an answer, not a plan. A plan may become relevant later once the investigation reveals what needs to change.
 
