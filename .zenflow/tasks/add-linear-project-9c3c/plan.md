@@ -169,7 +169,8 @@ Detailed execution plan created below. The generic Implementation placeholder ha
   - Five top-level issues exist under this milestone
   - The batch covers release, smoke testing, and post-launch observability
 
-### [ ] Step: Seed the "Mobile App MVP Ready For Beta" issue batch
+### [x] Step: Seed the "Mobile App MVP Ready For Beta" issue batch
+<!-- chat-id: 8e216adb-4055-4722-86e4-baf95ebdb8bb -->
 
 - Contracts:
   - Mobile App MVP scope in `{@artifacts_path}/requirements.md`
