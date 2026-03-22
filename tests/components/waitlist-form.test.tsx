@@ -10,12 +10,13 @@ describe("WaitlistForm", () => {
 
     render(<WaitlistForm source="footer" />);
 
+    const submitButton = screen.getByRole("button", { name: /submit/i });
+
     expect(
       screen.getByRole("textbox", { name: /your email address/i }),
     ).toBeInTheDocument();
-    expect(
-      screen.getByRole("button", { name: /submit/i }),
-    ).toBeInTheDocument();
+    expect(submitButton).toBeInTheDocument();
+    expect(submitButton).toHaveClass("w-full");
     expect(
       screen.getByRole("combobox", { name: /select your lake/i }),
     ).toHaveDisplayValue(/lake sidney lanier/i);

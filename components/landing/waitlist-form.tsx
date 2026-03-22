@@ -16,6 +16,7 @@ import {
 
 type WaitlistFormProps = {
   className?: string;
+  layout?: "inline" | "stacked";
   source: WaitlistSource;
 };
 
@@ -32,8 +33,9 @@ async function readResponseMessage(response: Response): Promise<WaitlistResponse
   }
 }
 
-export function WaitlistForm({ className, source }: WaitlistFormProps) {
+export function WaitlistForm({ className, layout, source }: WaitlistFormProps) {
   const surface: WaitlistSurface = waitlistSurfaceContent[source];
+  const layoutMode = layout ?? (source === "footer" ? "stacked" : "inline");
   const emailId = useId();
   const lakeId = useId();
   const emailErrorId = useId();
@@ -110,6 +112,14 @@ export function WaitlistForm({ className, source }: WaitlistFormProps) {
       : source === "hero"
         ? "text-amber-700"
         : "text-amber-300";
+  const fieldLayoutClassName =
+    layoutMode === "stacked"
+      ? "grid gap-4"
+      : "grid gap-4 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto]";
+  const buttonClassName =
+    layoutMode === "stacked"
+      ? "inline-flex w-full items-center justify-center bg-[var(--color-background)] px-6 py-3 text-xs font-semibold uppercase tracking-[0.2em] text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-70"
+      : "inline-flex items-center justify-center bg-[var(--color-background)] px-6 py-3 text-xs font-semibold uppercase tracking-[0.2em] text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-70";
 
   return (
     <form
@@ -125,7 +135,7 @@ export function WaitlistForm({ className, source }: WaitlistFormProps) {
           ) : null}
         </div>
       ) : null}
-      <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto]">
+      <div className={fieldLayoutClassName}>
         <div className="space-y-2">
           <label className={labelClassName} htmlFor={lakeId}>
             {surface.lakeLabel}
@@ -174,7 +184,7 @@ export function WaitlistForm({ className, source }: WaitlistFormProps) {
           ) : null}
         </div>
         <button
-          className="inline-flex items-center justify-center bg-[var(--color-background)] px-6 py-3 text-xs font-semibold uppercase tracking-[0.2em] text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-70"
+          className={buttonClassName}
           disabled={status === "loading"}
           type="submit"
         >

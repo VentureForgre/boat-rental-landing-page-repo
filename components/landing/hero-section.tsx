@@ -15,6 +15,7 @@ export function HeroSection() {
           aria-hidden="true"
           className="h-full w-full object-cover"
           height={1440}
+          loading="eager"
           priority
           src={featuredLakes[3].imageSrc}
           width={2200}

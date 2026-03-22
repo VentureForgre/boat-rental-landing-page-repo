@@ -76,7 +76,7 @@ export function SiteFooter() {
             </div>
           </section>
           <section>
-            <WaitlistForm source="footer" />
+            <WaitlistForm layout="stacked" source="footer" />
           </section>
         </div>
         <div className="border-t border-luxury pt-10 text-center">

@@ -30,7 +30,7 @@ describe("Landing page composition", () => {
   const currentYear = new Date().getFullYear();
 
   it("renders the expected sections, lakes, and waitlist surfaces", () => {
-    render(<HomePage />);
+    const { container } = render(<HomePage />);
 
     expect(
       screen.getByRole("link", { name: /join waitlist/i }),
@@ -98,6 +98,9 @@ describe("Landing page composition", () => {
       screen.getByRole("button", { name: /join the waitlist/i }),
     ).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /submit/i })).toBeInTheDocument();
+    expect(
+      container.querySelector('img[src*="pexels-photo-5151427"][loading="eager"]'),
+    ).not.toBeNull();
   });
 
   it("exposes a keyboard skip link and a toggleable mobile navigation menu", () => {
