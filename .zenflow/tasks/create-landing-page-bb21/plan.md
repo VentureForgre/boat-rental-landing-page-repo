@@ -137,7 +137,8 @@ Detailed execution plan created below. The generic Implementation placeholder ha
   - `npm run test`
   - `npm run lint`
 
-### [ ] Step: Implement the shared waitlist contract, API route, and reusable form
+### [x] Step: Implement the shared waitlist contract, API route, and reusable form
+<!-- chat-id: 6d700199-c9d7-450d-b989-8655c3903f62 -->
 
 - Contracts:
   - Waitlist capture and success criteria in `{@artifacts_path}/requirements.md`
@@ -162,6 +163,15 @@ Detailed execution plan created below. The generic Implementation placeholder ha
   - `tests/lib/waitlist-schema.test.ts`
   - `tests/app/api/waitlist/route.test.ts`
   - `tests/components/waitlist-form.test.tsx`
+  - `npm run lint`
+  - `npm run test`
+- Completed:
+  - Added `lib/waitlist-schema.ts` as the shared validation and response contract for `email`, `preferredLake`, and `source`, reusing the centralized lake list from `content/landing-page.ts`.
+  - Added `lib/waitlist.ts` as the initial server-side persistence adapter with a stable `saveWaitlistEntry()` interface for future backend or CRM integration.
+  - Added `components/landing/waitlist-form.tsx` as the reusable client form for both hero and footer surfaces, including inline loading, validation, success, and error states.
+  - Added `app/api/waitlist/route.ts` so both waitlist surfaces can post to one server route with shared validation and a stable JSON contract.
+- Verification passed:
+  - `npm run test -- tests/lib/waitlist-schema.test.ts tests/app/api/waitlist/route.test.ts tests/components/waitlist-form.test.tsx`
   - `npm run lint`
   - `npm run test`
 
