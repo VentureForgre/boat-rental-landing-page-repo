@@ -26,7 +26,8 @@ Focus on **what** the feature should do and **why**, not **how** it should be bu
 
 Save the PRD to `{@artifacts_path}/requirements.md`.
 
-### [ ] Step: Technical Specification
+### [x] Step: Technical Specification
+<!-- chat-id: 1daaeb42-d842-4817-98e7-f3806e262ef3 -->
 
 Create a technical specification based on the PRD in `{@artifacts_path}/requirements.md`.
 
