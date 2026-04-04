@@ -33,8 +33,8 @@ describe("Landing page composition", () => {
     vi.unstubAllGlobals();
   });
 
-  it("renders the expected sections, lakes, and both conversion surfaces without referral context", () => {
-    const { container } = render(<HomePage />);
+  it("renders the expected sections, lakes, and both conversion surfaces without referral context", async () => {
+    const { container } = render(await HomePage({}));
 
     expect(
       screen.getByRole("heading", {
@@ -136,7 +136,7 @@ describe("Landing page composition", () => {
       );
     vi.stubGlobal("fetch", fetchMock);
 
-    render(<HomePage searchParams={{ ref: "ab12cd34" }} />);
+    render(await HomePage({ searchParams: Promise.resolve({ ref: "ab12cd34" }) }));
 
     const hero = screen.getByRole("banner");
     const footer = screen.getByRole("contentinfo");
@@ -177,8 +177,9 @@ describe("Landing page composition", () => {
     });
   });
 
-  it("exposes a keyboard skip link and a toggleable mobile navigation menu", () => {
-    const layout = RootLayout({ children: <HomePage /> });
+  it("exposes a keyboard skip link and a toggleable mobile navigation menu", async () => {
+    const page = await HomePage({});
+    const layout = RootLayout({ children: page });
 
     render(<>{layout.props.children.props.children}</>);
 

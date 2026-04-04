@@ -38,15 +38,19 @@ describe("HomePage", () => {
     siteFooterSpy.mockClear();
   });
 
-  it("passes a normalized referral code into both landing page conversion surfaces", () => {
-    render(<HomePage searchParams={{ ref: " ab12cd34 " }} />);
+  it("passes a normalized referral code into both landing page conversion surfaces", async () => {
+    render(await HomePage({ searchParams: Promise.resolve({ ref: " ab12cd34 " }) }));
 
     expect(heroSectionSpy.mock.calls[0]?.[0]).toEqual({ referralCode: "AB12CD34" });
     expect(siteFooterSpy.mock.calls[0]?.[0]).toEqual({ referralCode: "AB12CD34" });
   });
 
-  it("uses the first valid referral code from repeated query params and ignores invalid values", () => {
-    const { rerender } = render(<HomePage searchParams={{ ref: ["bad-ref", " zx98yu76 "] }} />);
+  it("uses the first valid referral code from repeated query params and ignores invalid values", async () => {
+    const { rerender } = render(
+      await HomePage({
+        searchParams: Promise.resolve({ ref: ["bad-ref", " zx98yu76 "] }),
+      }),
+    );
 
     expect(heroSectionSpy.mock.calls[0]?.[0]).toEqual({ referralCode: "ZX98YU76" });
     expect(siteFooterSpy.mock.calls[0]?.[0]).toEqual({ referralCode: "ZX98YU76" });
@@ -54,7 +58,7 @@ describe("HomePage", () => {
     heroSectionSpy.mockClear();
     siteFooterSpy.mockClear();
 
-    rerender(<HomePage searchParams={{ ref: "not-valid" }} />);
+    rerender(await HomePage({ searchParams: Promise.resolve({ ref: "not-valid" }) }));
 
     expect(heroSectionSpy.mock.calls[0]?.[0]).toEqual({ referralCode: undefined });
     expect(siteFooterSpy.mock.calls[0]?.[0]).toEqual({ referralCode: undefined });

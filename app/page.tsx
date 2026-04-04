@@ -10,7 +10,7 @@ type PageSearchParams = {
 };
 
 type HomePageProps = {
-  searchParams?: PageSearchParams;
+  searchParams?: Promise<PageSearchParams> | PageSearchParams;
 };
 
 function normalizeReferralCode(
@@ -33,8 +33,9 @@ function normalizeReferralCode(
   return undefined;
 }
 
-export default function HomePage({ searchParams }: HomePageProps) {
-  const referralCode = normalizeReferralCode(searchParams?.ref);
+export default async function HomePage({ searchParams }: HomePageProps) {
+  const resolvedSearchParams = await searchParams;
+  const referralCode = normalizeReferralCode(resolvedSearchParams?.ref);
 
   return (
     <main id="main-content">
