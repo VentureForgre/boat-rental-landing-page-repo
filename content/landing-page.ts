@@ -6,6 +6,7 @@ export type LakeId =
   | "walter-f-george-lake";
 
 export type WaitlistSource = "hero" | "footer";
+export type LandingConversionType = "waitlist" | "deposit";
 
 export type LandingIconName =
   | "badge"
@@ -47,6 +48,27 @@ export type LakeFeature = {
 export type BenefitCard = {
   description: string;
   icon: LandingIconName;
+  title: string;
+};
+
+export type ConversionChoice = {
+  description: string;
+  id: LandingConversionType;
+  label: string;
+  submitLabel: string;
+  success: {
+    body: string;
+    title: string;
+  };
+  valueProps: string[];
+  disclaimer?: string;
+};
+
+export type ReferralShareContent = {
+  description: string;
+  fallbackActionLabel: string;
+  helperText: string;
+  primaryActionLabel: string;
   title: string;
 };
 
@@ -232,6 +254,61 @@ export const landingPageContent = {
     hoursNote: "We Reply Within 24 Hrs",
     phone: "+1 (800) LUXE-LAKE",
     title: "Concierge",
+  },
+  conversionFlow: {
+    description:
+      "The landing page should distinguish between low-friction interest and high-intent demand without losing the premium Luxe Lake tone.",
+    metricCallout:
+      "Referral rate should measure what percentage of completed signups came from another signup sharing their link, so organic demand is visible alongside raw volume.",
+    choices: [
+      {
+        description:
+          "Keep a free path for visitors who want launch updates before they commit money.",
+        id: "waitlist",
+        label: "Free waitlist",
+        submitLabel: "Join the Free Waitlist",
+        success: {
+          body: "Confirm their lake interest, promise launch updates, and tee up sharing without asking for payment.",
+          title: "Free waitlist success",
+        },
+        valueProps: [
+          "No payment required to raise a hand.",
+          "Captures lake preference and timing interest for launch planning.",
+          "Still unlocks a referral link after a successful signup.",
+        ],
+      },
+      {
+        description:
+          "Frame the $25 refundable deposit as the stronger commitment signal while staying explicit that the amount is refundable.",
+        disclaimer:
+          "Do not imply that payment has already been collected while backend payments remain out of scope.",
+        id: "deposit",
+        label: "$25 refundable deposit",
+        submitLabel: "Request Deposit Priority",
+        success: {
+          body: "Acknowledge the deposit request, explain that payment collection happens later, and move immediately into referral sharing.",
+          title: "Deposit intent success",
+        },
+        valueProps: [
+          "Signals materially stronger intent than a free email signup.",
+          "Keeps the refundable $25 amount explicit in every deposit-facing message.",
+          "Promises priority follow-up without pretending the payment flow is already live.",
+        ],
+      },
+    ] satisfies readonly ConversionChoice[],
+    referralShare: {
+      description:
+        "After any successful signup, prompt sharing so referral rate can prove organic demand instead of relying on pageviews alone.",
+      fallbackActionLabel: "Copy link manually",
+      helperText:
+        "Friends who arrive from the link can still choose either the free waitlist or the $25 refundable deposit path.",
+      primaryActionLabel: "Copy referral link",
+      title: "Share the signup link",
+    } satisfies ReferralShareContent,
+    selectorLabel: "Choose how to show demand",
+    selectorSupportingText:
+      "Free signup stays frictionless, while the deposit path communicates stronger booking intent and a refundable $25 commitment.",
+    title: "Two conversion paths, one demand story",
   },
   destinationsHeading: "Destinations",
   footerCopyright: `\u00A9 ${currentYear} Luxe Lake Escapes, All Rights Reserved`,
