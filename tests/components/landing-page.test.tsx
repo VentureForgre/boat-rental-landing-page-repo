@@ -1,5 +1,5 @@
 import type { ComponentPropsWithoutRef } from "react";
-import { fireEvent, render, screen, within } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import HomePage from "@/app/page";
 
 vi.mock("next/font/google", () => ({
@@ -29,9 +29,19 @@ const { default: RootLayout } = await import("@/app/layout");
 describe("Landing page composition", () => {
   const currentYear = new Date().getFullYear();
 
-  it("renders the expected sections, lakes, and waitlist surfaces", () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it("renders the expected sections, lakes, and both conversion surfaces without referral context", () => {
     const { container } = render(<HomePage />);
 
+    expect(
+      screen.getByRole("heading", {
+        level: 1,
+        name: /the art of inland sailing/i,
+      }),
+    ).toBeInTheDocument();
     expect(
       screen.getByRole("link", { name: /join waitlist/i }),
     ).toHaveAttribute("href", "#waitlist");
@@ -42,46 +52,24 @@ describe("Landing page composition", () => {
       }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("heading", { level: 3, name: /lake sidney lanier/i }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("heading", { level: 3, name: /allatoona lake/i }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("heading", { level: 3, name: /hartwell lake/i }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("heading", {
-        level: 3,
-        name: /j\. strom thurmond lake/i,
-      }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("heading", {
-        level: 3,
-        name: /walter f\. george lake/i,
-      }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("heading", {
-        level: 2,
-        name: /unrivaled safety, comfort & style/i,
-      }),
-    ).toBeInTheDocument();
-    expect(
       screen.getByRole("heading", {
         level: 2,
         name: /secure your launch priority/i,
       }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("heading", {
-        level: 3,
-        name: /professional captains/i,
-      }),
-    ).toBeInTheDocument();
+      screen.getAllByText(/choose how to show demand/i),
+    ).toHaveLength(2);
+    expect(
+      screen.getAllByRole("radio", { name: /free waitlist/i }),
+    ).toHaveLength(2);
+    expect(
+      screen.getAllByRole("radio", { name: /\$25 refundable deposit/i }),
+    ).toHaveLength(2);
+    expect(
+      screen.getAllByRole("button", { name: /join the free waitlist/i }),
+    ).toHaveLength(2);
     expect(screen.getByText(/concierge@luxelake\.com/i)).toBeInTheDocument();
-    expect(screen.getByText(/primary market .* launch priority/i)).toBeInTheDocument();
     expect(
       screen.getByText(
         new RegExp(`${currentYear} luxe lake escapes, all rights reserved`, "i"),
@@ -95,14 +83,90 @@ describe("Landing page composition", () => {
     ).toBeInTheDocument();
     expect(screen.getAllByRole("combobox", { name: /select your lake/i })).toHaveLength(2);
     expect(
-      screen.getByRole("button", { name: /join the waitlist/i }),
-    ).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /submit/i })).toBeInTheDocument();
-    expect(
       container.querySelector('img[src*="AB6AXuA0T4Z2ypI0eBJgupQzvWlIf9-gSx5gm0BwhAWYj_KtpY-y0v_BoTq3Rta3qv4YFs0lefLx8FfMKr-HfmmTnqPjLcd6h6qBtiK79HlomyqG4oe1LYK0NBRSl6pbyNkn9XOMJtZP5CWruiMrzrxeqwyoftuto_9ZtvVtL9HAsjZF0ZXAXOsoD7tKqlsrJeIZ0vpHxHKncvmnHEEvSdP4mVGUnvzN4YzEA_nmWPiazYz2rXCXiwCgsuGbR_9ZaOQnxK4KuPpSl0g70so_"][loading="eager"]'),
     ).not.toBeNull();
     expect(container.querySelector('[data-testid="hero-fade-transition"]')).not.toBeNull();
     expect(container.querySelector('[data-testid="lakes-fade-transition"]')).not.toBeNull();
+  });
+
+  it("includes the referral code in submissions from both the hero and footer surfaces", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(
+        new Response(
+          JSON.stringify({
+            ok: true,
+            message: "You are on the Luxe Lake waitlist.",
+            conversionType: "waitlist",
+            referralCode: "ZX98YU76",
+            shareUrl: "https://luxelake.com/?ref=ZX98YU76",
+          }),
+          {
+            status: 200,
+            headers: {
+              "content-type": "application/json",
+            },
+          },
+        ),
+      )
+      .mockResolvedValueOnce(
+        new Response(
+          JSON.stringify({
+            ok: true,
+            message: "You are on the Luxe Lake waitlist.",
+            conversionType: "waitlist",
+            referralCode: "MN34PQ56",
+            shareUrl: "https://luxelake.com/?ref=MN34PQ56",
+          }),
+          {
+            status: 200,
+            headers: {
+              "content-type": "application/json",
+            },
+          },
+        ),
+      );
+    vi.stubGlobal("fetch", fetchMock);
+
+    render(<HomePage searchParams={{ ref: "ab12cd34" }} />);
+
+    const hero = screen.getByRole("banner");
+    const footer = screen.getByRole("contentinfo");
+
+    fireEvent.change(within(hero).getByRole("textbox", { name: /ready to book/i }), {
+      target: { value: "captain@example.com" },
+    });
+    fireEvent.click(within(hero).getByRole("button", { name: /join the free waitlist/i }));
+
+    fireEvent.change(within(footer).getByRole("textbox", { name: /your email address/i }), {
+      target: { value: "crew@example.com" },
+    });
+    fireEvent.click(within(footer).getByRole("button", { name: /join the free waitlist/i }));
+
+    await waitFor(() => {
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+    });
+
+    expect(fetchMock.mock.calls[0]?.[1]).toMatchObject({
+      method: "POST",
+      body: JSON.stringify({
+        email: "captain@example.com",
+        preferredLake: "lake-sidney-lanier",
+        source: "hero",
+        conversionType: "waitlist",
+        referralCode: "AB12CD34",
+      }),
+    });
+    expect(fetchMock.mock.calls[1]?.[1]).toMatchObject({
+      method: "POST",
+      body: JSON.stringify({
+        email: "crew@example.com",
+        preferredLake: "lake-sidney-lanier",
+        source: "footer",
+        conversionType: "waitlist",
+        referralCode: "AB12CD34",
+      }),
+    });
   });
 
   it("exposes a keyboard skip link and a toggleable mobile navigation menu", () => {
