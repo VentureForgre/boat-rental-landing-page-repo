@@ -79,7 +79,7 @@ export function SiteFooter({ referralCode }: SiteFooterProps) {
               </p>
             </div>
           </section>
-          <section>
+          <section className="rounded-[2rem] border border-white/10 bg-[linear-gradient(145deg,rgba(255,255,255,0.04),rgba(255,255,255,0.01))] p-3 shadow-[0_24px_70px_rgba(0,0,0,0.2)] backdrop-blur sm:p-4">
             <WaitlistForm layout="stacked" referralCode={referralCode} source="footer" />
           </section>
         </div>

@@ -46,8 +46,8 @@ export function HeroSection({ referralCode }: HeroSectionProps) {
             {landingPageContent.hero.description}
           </p>
         </div>
-        <div className="relative z-10 mt-12 w-full max-w-5xl sm:mt-16" id="waitlist">
-          <div className="bg-white p-3 shadow-[0_20px_70px_rgba(0,0,0,0.35)]">
+        <div className="relative z-10 mt-12 w-full max-w-5xl sm:mt-16" id="deposit">
+          <div className="overflow-hidden rounded-[2rem] border border-white/15 bg-[linear-gradient(145deg,rgba(255,255,255,0.2),rgba(255,255,255,0.06))] p-3 shadow-[0_28px_90px_rgba(0,0,0,0.36)] backdrop-blur-xl sm:p-4">
             <WaitlistForm referralCode={referralCode} source="hero" />
           </div>
         </div>

@@ -2,70 +2,75 @@
 
 ## Purpose
 
-The landing page now has to support two demand signals instead of one:
+The landing page is now deposit-only.
 
-- `Free waitlist` keeps the lowest-friction signup path for visitors who want updates.
-- `$25 refundable deposit` introduces a higher-intent path that is clearly framed as refundable and stronger proof of demand.
-
-The frontend should treat both paths as part of the same landing-page story, then follow either one with referral sharing.
+- The only conversion path is a `$25 refundable deposit`.
+- The page should explain why this signal matters: `100 deposits. $2,500. Louder than 1,000 free emails.`
+- Every successful deposit request should transition into referral sharing so referral rate can prove organic demand.
 
 ## Shared Content Model
 
-All conversion messaging lives in [`content/landing-page.ts`](/C:/Users/1solo/.zenflow/worktrees/add-new-deposit-option-b042/content/landing-page.ts) so the hero and footer can render the same copy hierarchy without hardcoded strings.
+All conversion messaging lives in [`content/landing-page.ts`](/C:/Users/1solo/.zenflow/worktrees/add-new-deposit-option-b042/content/landing-page.ts) so the hero and footer stay in sync.
 
 The shared hierarchy is:
 
-1. Conversion-flow framing
-2. Choice-specific copy for `Free waitlist` and `$25 refundable deposit`
-3. Choice-specific success copy
-4. Referral share state copy
+1. Reservation brief headline and demand-proof callout
+2. Three proof cards: refundable deposit, concierge follow-up, referral proof
+3. Deposit-specific value props and disclaimer
+4. Surface-specific form intro and supporting copy
+5. Success state copy
+6. Referral share state copy
 
-## Hero Surface
+## Hero surface
 
-The Hero surface remains the primary conversion entry point.
+The Hero surface is the primary conversion entry point.
 
-- Keep the luxury brand framing, launch-market context, and current hero imagery.
-- Introduce copy that explains there are two commitment levels without making the layout feel like a checkout flow.
-- When the richer form lands, the hero should lead with the conversion selector, then the shared lake/email fields, then the choice-specific CTA.
+- Keep the cinematic image and premium tone.
+- Replace the old selector with a richer reservation brief that feels like a luxury charter folio, not a checkout form.
+- Lead with the metric callout, then the three proof cards, then the deposit value props, then the form shell.
+- Use the heading `Request a $25 refundable priority deposit`.
+- Inside the form shell, use the section title `Priority deposit request`.
+- Keep the CTA explicit: the visitor is requesting deposit priority, not completing payment on the spot.
 
-## Footer Surface
+## Footer surface
 
-The Footer surface stays as the lower-page conversion repeat.
+The Footer surface remains the final conversion repeat.
 
-- Reuse the same conversion choices and success messaging as the hero.
-- Preserve the stacked layout and concierge adjacency so the footer still feels like a softer final prompt.
-- Do not create footer-only deposit language; the difference between the two paths should stay centralized.
+- Reuse the same deposit-only reservation brief and submit CTA as the hero.
+- Keep the stacked layout and concierge adjacency.
+- Preserve the darker footer aesthetic while matching the same copy hierarchy.
+- The supporting copy should explicitly mention `Launch priority for Lake Sidney Lanier` to ground the default market selection.
 
 ## Pre-Submission Copy
 
-Before submit, the interface should make the distinction explicit:
-
-- `Free waitlist` is for lightweight interest and launch updates.
-- `$25 refundable deposit` is for visitors willing to signal stronger booking intent.
-
-Deposit copy must always keep three ideas together:
+Before submit, the interface should make these ideas obvious:
 
 1. The amount is `$25`
-2. The amount is `refundable`
-3. The current frontend is collecting intent, not pretending that live payment has already happened
+2. The deposit is `refundable`
+3. Concierge confirms the deposit collection after the request is submitted
+4. Referral rate shows whether signups are bringing in more signups organically
 
-## Success State
+## Success state
 
-The Success state should branch by conversion choice.
+The Success state confirms the deposit request without implying a completed charge.
 
-- Free waitlist success confirms lake interest, launch updates, and next-step sharing.
-- Deposit success confirms deposit intent, explains that payment follow-up happens separately, and avoids language that sounds like a completed charge.
+- Confirm with the message `Your $25 refundable priority request is in. Concierge follow-up comes next to finalize the deposit.`
+- Explain that payment collection happens in a later concierge follow-up.
+- Keep the tone premium and confident, not transactional.
 
-## Referral Share State
+## Referral share state
 
-The Referral share state appears only after a successful signup.
+The Referral share state appears immediately after a successful deposit request.
 
+- Use the heading `Keep the priority list moving`.
 - Primary action: copy the personal share link.
-- Fallback: provide a manual copy path if the clipboard action fails.
-- Copy should explain that referral rate matters because it shows organic demand from completed signups, not just traffic.
+- Fallback: highlight the link for manual copy if clipboard APIs fail.
+- Copy should explain that referral rate tracks what share of completed deposit requests came from another signup's shared link.
 
 ## Copy Principles
 
-- Keep the free path easy and credible.
-- Keep the deposit path premium, clear, and non-misleading.
-- Keep referral language simple enough that sharing feels like a natural follow-up instead of a separate campaign.
+- Keep the experience premium, sharp, and high-intent.
+- Avoid any free-waitlist framing.
+- Never imply payment has already been processed.
+- Make the demand proof legible at a glance.
+- Use the phrase `reservation brief` when describing the top half of the card in design discussions so implementation and docs stay aligned.

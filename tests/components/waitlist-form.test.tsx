@@ -6,43 +6,38 @@ describe("WaitlistForm", () => {
     vi.unstubAllGlobals();
   });
 
-  it("renders both conversion choices and updates the CTA for the selected path", async () => {
+  it("renders a deposit-only reservation brief with elevated demand-proof copy", async () => {
     const { WaitlistForm } = await import("@/components/landing/waitlist-form");
 
     render(<WaitlistForm source="footer" />);
 
     expect(
-      screen.getByRole("radio", { name: /free waitlist/i }),
-    ).toBeChecked();
+      screen.queryByRole("radio", { name: /\$25 refundable deposit/i }),
+    ).not.toBeInTheDocument();
     expect(
-      screen.getByRole("radio", { name: /\$25 refundable deposit/i }),
-    ).not.toBeChecked();
-    expect(screen.getByText(/show demand/i)).toBeInTheDocument();
-    expect(
-      screen.getByText(/free signup stays frictionless/i),
+      screen.getByRole("heading", {
+        level: 2,
+        name: /request a \$25 refundable priority deposit/i,
+      }),
     ).toBeInTheDocument();
+    expect(screen.getByText(/100 deposits\. \$2,500\. louder than 1,000 free emails/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/refundable deposit/i).length).toBeGreaterThan(0);
+    expect(screen.getByText(/concierge follow-up/i)).toBeInTheDocument();
+    expect(screen.getByText(/referral proof/i)).toBeInTheDocument();
+    expect(screen.getByText(/launch priority for lake sidney lanier/i)).toBeInTheDocument();
 
     expect(
       screen.getByRole("textbox", { name: /your email address/i }),
     ).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /join the free waitlist/i })).toHaveClass(
-      "w-full",
-    );
+    expect(
+      screen.getByRole("button", { name: /request deposit priority/i }),
+    ).toHaveClass("w-full");
     expect(
       screen.getByRole("combobox", { name: /select your lake/i }),
     ).toHaveDisplayValue(/lake sidney lanier/i);
-    expect(screen.getByText(/stay updated on launch dates/i)).toBeInTheDocument();
-
-    fireEvent.click(
-      screen.getByRole("radio", { name: /\$25 refundable deposit/i }),
-    );
-
     expect(
-      screen.getByRole("button", { name: /request deposit priority/i }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(/payment has already been collected/i),
-    ).toBeInTheDocument();
+      screen.getAllByText(/concierge confirms the deposit collection after you submit/i).length,
+    ).toBeGreaterThan(0);
   });
 
   it("shows a client-side validation message before posting invalid email", async () => {
@@ -56,16 +51,16 @@ describe("WaitlistForm", () => {
     expect(document.querySelector('[aria-live="polite"]')).toBeNull();
     expect(
       screen.getByRole("combobox", { name: /select your lake/i }),
-    ).toHaveClass("border-[var(--color-background)]");
+    ).toHaveClass("border-[var(--color-background)]/15");
     expect(
       screen.getByRole("textbox", { name: /ready to book/i }),
-    ).toHaveClass("border-[var(--color-background)]");
+    ).toHaveClass("border-[var(--color-background)]/15");
 
     fireEvent.change(screen.getByRole("textbox", { name: /ready to book/i }), {
       target: { value: "not-an-email" },
     });
     fireEvent.click(
-      screen.getByRole("button", { name: /join the free waitlist/i }),
+      screen.getByRole("button", { name: /request deposit priority/i }),
     );
 
     expect(
@@ -77,7 +72,7 @@ describe("WaitlistForm", () => {
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
-  it("submits the selected deposit payload, including referral attribution, and shows share UI", async () => {
+  it("submits the deposit payload, including referral attribution, and shows share UI", async () => {
     const writeTextMock = vi.fn().mockResolvedValue(undefined);
     Object.defineProperty(window.navigator, "clipboard", {
       configurable: true,
@@ -99,10 +94,6 @@ describe("WaitlistForm", () => {
 
     render(<WaitlistForm referralCode="AB12CD34" source="hero" />);
 
-    fireEvent.click(
-      screen.getByRole("radio", { name: /\$25 refundable deposit/i }),
-    );
-
     fireEvent.change(screen.getByRole("textbox", { name: /ready to book/i }), {
       target: { value: "guest@example.com" },
     });
@@ -118,7 +109,8 @@ describe("WaitlistForm", () => {
       new Response(
         JSON.stringify({
           ok: true,
-          message: "Your refundable deposit request has been recorded.",
+          message:
+            "Your $25 refundable priority request is in. Concierge follow-up comes next to finalize the deposit.",
           conversionType: "deposit",
           referralCode: "ZX98YU76",
           shareUrl: "https://luxelake.com/?ref=ZX98YU76",
@@ -152,12 +144,15 @@ describe("WaitlistForm", () => {
     });
 
     expect(
-      await screen.findByText(/your refundable deposit request has been recorded/i),
+      await screen.findByText(/your \$25 refundable priority request is in/i),
     ).toBeInTheDocument();
     expect(screen.getByRole("status")).toHaveTextContent(
-      /your refundable deposit request has been recorded/i,
+      /your \$25 refundable priority request is in/i,
     );
     expect(screen.getByDisplayValue("https://luxelake.com/?ref=ZX98YU76")).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { level: 3, name: /keep the priority list moving/i }),
+    ).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: /copy referral link/i }),
     ).toBeInTheDocument();
@@ -187,15 +182,16 @@ describe("WaitlistForm", () => {
       target: { value: "guest@example.com" },
     });
     fireEvent.click(
-      screen.getByRole("button", { name: /join the free waitlist/i }),
+      screen.getByRole("button", { name: /request deposit priority/i }),
     );
 
     resolveFetch?.(
       new Response(
         JSON.stringify({
           ok: true,
-          message: "You are on the Luxe Lake waitlist.",
-          conversionType: "waitlist",
+          message:
+            "Your $25 refundable priority request is in. Concierge follow-up comes next to finalize the deposit.",
+          conversionType: "deposit",
           referralCode: "AB12CD34",
           shareUrl: "https://luxelake.com/?ref=AB12CD34",
         }),
@@ -214,6 +210,8 @@ describe("WaitlistForm", () => {
     expect(
       screen.getByRole("button", { name: /copy link manually/i }),
     ).toBeInTheDocument();
-    expect(screen.getByText(/friends who arrive from the link/i)).toBeInTheDocument();
+    expect(
+      screen.getAllByText(/referral rate tracks what share of completed deposit requests/i).length,
+    ).toBeGreaterThan(0);
   });
 });

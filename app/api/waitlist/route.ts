@@ -16,12 +16,8 @@ function buildShareUrl(requestUrl: string, referralCode: string) {
   return shareUrl.toString();
 }
 
-function getSuccessMessage(conversionType: "waitlist" | "deposit") {
-  if (conversionType === "deposit") {
-    return "Your refundable deposit request is recorded for priority follow-up.";
-  }
-
-  return "You are on the Luxe Lake waitlist.";
+function getSuccessMessage() {
+  return "Your $25 refundable priority request is in. Concierge follow-up comes next to finalize the deposit.";
 }
 
 export async function POST(request: Request) {
@@ -33,7 +29,7 @@ export async function POST(request: Request) {
     return jsonResponse(
       {
         ok: false,
-        message: "We could not read your waitlist request. Please try again.",
+        message: "We could not read your deposit request. Please try again.",
       },
       400,
     );
@@ -51,7 +47,7 @@ export async function POST(request: Request) {
     return jsonResponse(
       {
         ok: true,
-        message: getSuccessMessage(entry.conversionType),
+        message: getSuccessMessage(),
         conversionType: entry.conversionType,
         referralCode: entry.referralCode,
         shareUrl: buildShareUrl(request.url, entry.referralCode),
@@ -62,7 +58,7 @@ export async function POST(request: Request) {
     return jsonResponse(
       {
         ok: false,
-        message: "We could not save your waitlist request. Please try again.",
+        message: "We could not save your deposit request. Please try again.",
       },
       500,
     );

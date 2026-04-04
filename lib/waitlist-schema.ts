@@ -6,7 +6,7 @@ import {
 } from "@/content/landing-page";
 
 export const waitlistSourceOptions = ["hero", "footer"] as const;
-export const conversionTypeOptions = ["waitlist", "deposit"] as const;
+export const conversionTypeOptions = ["deposit"] as const;
 export const referralCodePattern = /^[A-Z0-9]{8}$/;
 
 export type WaitlistFieldName =
@@ -81,8 +81,7 @@ export function validateWaitlistSubmission(
         email: "Enter a valid email address.",
         preferredLake: "Select one of the supported launch lakes.",
         source: "Form source must be hero or footer.",
-        conversionType:
-          "Choose either the free waitlist or the refundable deposit option.",
+        conversionType: "Choose the refundable $25 deposit option.",
       },
     };
   }
@@ -113,8 +112,7 @@ export function validateWaitlistSubmission(
   }
 
   if (!isConversionType(conversionType)) {
-    fieldErrors.conversionType =
-      "Choose either the free waitlist or the refundable deposit option.";
+    fieldErrors.conversionType = "Choose the refundable $25 deposit option.";
   }
 
   if (
@@ -142,14 +140,14 @@ export function validateWaitlistSubmission(
 
   return {
     ok: true,
-      data: {
-        email,
-        preferredLake: preferredLake as LakeId,
-        source: source as WaitlistSource,
-        conversionType: conversionType as ConversionType,
-        ...(referralCode && referralCodePattern.test(referralCode)
-          ? { referralCode }
-          : {}),
-      },
+    data: {
+      email,
+      preferredLake: preferredLake as LakeId,
+      source: source as WaitlistSource,
+      conversionType: conversionType as ConversionType,
+      ...(referralCode && referralCodePattern.test(referralCode)
+        ? { referralCode }
+        : {}),
+    },
   };
 }

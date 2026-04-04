@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     canonical: "/",
   },
   description:
-    "Luxury boat charters on Georgia lakes with concierge-level service, professional captains, and early-access waitlist booking.",
+    "Luxury boat charters on Georgia lakes with concierge-level service, professional captains, and refundable $25 deposit priority before launch.",
   keywords: [
     "Georgia boat rentals",
     "luxury yacht charter Georgia",
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://luxelakeescapes.com"),
   openGraph: {
     description:
-      "Luxury boat charters on Georgia lakes with concierge-level service, professional captains, and early-access waitlist booking.",
+      "Luxury boat charters on Georgia lakes with concierge-level service, professional captains, and refundable $25 deposit priority before launch.",
     locale: "en_US",
     siteName: "Luxe Lake Escapes",
     title: "Luxe Lake Escapes | Luxury Boat Rentals Georgia",
@@ -45,7 +45,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     description:
-      "Luxury boat charters on Georgia lakes with concierge-level service, professional captains, and early-access waitlist booking.",
+      "Luxury boat charters on Georgia lakes with concierge-level service, professional captains, and refundable $25 deposit priority before launch.",
     title: "Luxe Lake Escapes | Luxury Boat Rentals Georgia",
   },
 };

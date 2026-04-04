@@ -63,7 +63,7 @@ describe("landing-page content", () => {
     expect(walterFGeorge?.imageSrc).toMatch(/^https:\/\/images\.pexels\.com\//);
   });
 
-  it("defines both conversion choices plus deposit and referral copy in shared content", () => {
+  it("defines a deposit-only conversion flow with stronger demand-proof messaging", () => {
     const conversionFlow = (
       landingPageContent as {
         conversionFlow?: {
@@ -75,43 +75,51 @@ describe("landing-page content", () => {
             valueProps: string[];
           }>;
           metricCallout?: string;
+          proofPoints?: Array<{
+            description: string;
+            label: string;
+          }>;
           referralShare?: {
             description: string;
             fallbackActionLabel: string;
+            helperText: string;
             primaryActionLabel: string;
             title: string;
           };
+          title?: string;
         };
       }
     ).conversionFlow;
 
     expect(conversionFlow).toBeDefined();
-    expect(conversionFlow?.choices).toHaveLength(2);
-    expect(conversionFlow?.choices?.map((choice) => choice.id)).toEqual([
-      "waitlist",
-      "deposit",
-    ]);
+    expect(conversionFlow?.choices).toHaveLength(1);
+    expect(conversionFlow?.choices?.map((choice) => choice.id)).toEqual(["deposit"]);
 
-    const waitlistChoice = conversionFlow?.choices?.find(
-      (choice) => choice.id === "waitlist",
-    );
     const depositChoice = conversionFlow?.choices?.find(
       (choice) => choice.id === "deposit",
     );
 
-    expect(waitlistChoice?.label.toLowerCase()).toContain("free");
-    expect(waitlistChoice?.valueProps).toHaveLength(3);
-    expect(waitlistChoice?.success.title.length).toBeGreaterThan(0);
-
     expect(depositChoice?.label).toContain("$25");
     expect(depositChoice?.description.toLowerCase()).toContain("refundable");
     expect(depositChoice?.valueProps).toHaveLength(3);
-    expect(depositChoice?.success.body.toLowerCase()).toContain("payment");
+    expect(depositChoice?.success.title).toMatch(/priority/i);
+    expect(depositChoice?.success.body.toLowerCase()).toContain("concierge");
 
-    expect(conversionFlow?.metricCallout?.toLowerCase()).toContain("referral rate");
+    expect(conversionFlow?.title).toMatch(/priority deposit/i);
+    expect(conversionFlow?.metricCallout).toContain("100 deposits");
+    expect(conversionFlow?.proofPoints).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ label: expect.stringMatching(/refund/i) }),
+        expect.objectContaining({ label: expect.stringMatching(/concierge/i) }),
+        expect.objectContaining({ label: expect.stringMatching(/referral/i) }),
+      ]),
+    );
     expect(conversionFlow?.referralShare?.title.toLowerCase()).toContain("share");
     expect(conversionFlow?.referralShare?.description.toLowerCase()).toContain(
       "organic demand",
+    );
+    expect(conversionFlow?.referralShare?.helperText.toLowerCase()).toContain(
+      "completed deposit requests",
     );
     expect(conversionFlow?.referralShare?.primaryActionLabel).toContain("Copy");
     expect(conversionFlow?.referralShare?.fallbackActionLabel).toContain("manual");
@@ -126,8 +134,10 @@ describe("landing-page content", () => {
 
     expect(designDoc).toContain("Hero surface");
     expect(designDoc).toContain("Footer surface");
-    expect(designDoc).toContain("Free waitlist");
     expect(designDoc).toContain("$25 refundable deposit");
+    expect(designDoc).toContain("deposit-only");
+    expect(designDoc).toContain("reservation brief");
+    expect(designDoc).toContain("Priority deposit request");
     expect(designDoc).toContain("Success state");
     expect(designDoc).toContain("Referral share state");
   });

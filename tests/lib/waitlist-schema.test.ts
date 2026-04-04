@@ -24,11 +24,11 @@ describe("validateWaitlistSubmission", () => {
         referralCode: "AB12CD34",
       },
     });
-    expect(conversionTypeOptions).toEqual(["waitlist", "deposit"]);
+    expect(conversionTypeOptions).toEqual(["deposit"]);
     expect(waitlistSourceOptions).toEqual(["hero", "footer"]);
   });
 
-  it("rejects unsupported conversion types and malformed referral codes", async () => {
+  it("rejects legacy waitlist conversions and malformed referral codes", async () => {
     const { validateWaitlistSubmission } = await import(
       "@/lib/waitlist-schema"
     );
@@ -37,7 +37,7 @@ describe("validateWaitlistSubmission", () => {
       email: "captain-at-luxelake.com",
       preferredLake: "lake-oconee",
       source: "sidebar",
-      conversionType: "vip",
+      conversionType: "waitlist",
       referralCode: "bad-ref",
     });
 
@@ -48,7 +48,7 @@ describe("validateWaitlistSubmission", () => {
         email: expect.stringMatching(/valid email/i),
         preferredLake: expect.stringMatching(/select/i),
         source: expect.stringMatching(/hero|footer/i),
-        conversionType: expect.stringMatching(/waitlist|deposit/i),
+        conversionType: expect.stringMatching(/deposit/i),
         referralCode: expect.stringMatching(/referral code/i),
       },
     });

@@ -6,7 +6,7 @@ export type LakeId =
   | "walter-f-george-lake";
 
 export type WaitlistSource = "hero" | "footer";
-export type LandingConversionType = "waitlist" | "deposit";
+export type LandingConversionType = "deposit";
 
 export type LandingIconName =
   | "badge"
@@ -64,6 +64,11 @@ export type ConversionChoice = {
   disclaimer?: string;
 };
 
+export type ConversionProofPoint = {
+  description: string;
+  label: string;
+};
+
 export type ReferralShareContent = {
   description: string;
   fallbackActionLabel: string;
@@ -76,6 +81,7 @@ export type WaitlistSurface = {
   defaultLakeId: LakeId;
   emailLabel: string;
   emailPlaceholder: string;
+  formIntro: string;
   lakeLabel: string;
   source: WaitlistSource;
   submitLabel: string;
@@ -214,20 +220,25 @@ export const waitlistSurfaceContent = {
     defaultLakeId: "lake-sidney-lanier",
     emailLabel: "Your Email Address",
     emailPlaceholder: "Your Email Address",
+    formIntro: "Choose the lake where concierge should prioritize your launch window.",
     lakeLabel: "Select Your Lake",
     source: "footer",
-    submitLabel: "Submit",
+    submitLabel: "Request Deposit Priority",
     supportingText:
-      "Select your preferred lake to stay updated on launch dates.",
-    title: "Join the Waitlist",
+      "Launch priority for Lake Sidney Lanier starts here. Concierge confirms the deposit collection after you submit.",
+    title: "Priority deposit request",
   },
   hero: {
     defaultLakeId: "lake-sidney-lanier",
     emailLabel: "Ready to Book?",
-    emailPlaceholder: "Enter your email for early access",
+    emailPlaceholder: "Enter your email for priority follow-up",
+    formIntro: "Tell us where to send the private deposit invite and launch updates.",
     lakeLabel: "Select Your Lake",
     source: "hero",
-    submitLabel: "Join the Waitlist",
+    submitLabel: "Request Deposit Priority",
+    supportingText:
+      "Concierge confirms the refundable $25 deposit collection after you submit this request.",
+    title: "Priority deposit request",
   },
 } satisfies Record<WaitlistSource, WaitlistSurface>;
 
@@ -241,11 +252,11 @@ export const landingPageContent = {
   },
   closingCta: {
     actions: [
-      { href: "#waitlist", label: "Request Early Access" },
-      { href: "#waitlist", label: "Get Fleet Updates" },
+      { href: "#deposit", label: "Reserve Priority" },
+      { href: "#lakes", label: "Explore Fleet" },
     ],
     body:
-      "Show Real Interest and Be The First To Book. Connect With Our Concierge Team At +1 (800) LUXE-LAKE.",
+      "Lead with a refundable $25 deposit request, then share your link so referral rate proves organic demand beyond the first signup.",
     title: "Secure Your Launch Priority",
   },
   concierge: {
@@ -257,73 +268,71 @@ export const landingPageContent = {
   },
   conversionFlow: {
     description:
-      "The landing page should distinguish between low-friction interest and high-intent demand without losing the premium Luxe Lake tone.",
+      "A single priority-deposit path keeps the experience high-intent: reserve launch priority now, then let concierge confirm the refundable $25 deposit off-platform.",
     metricCallout:
-      "Referral rate should measure what percentage of completed signups came from another signup sharing their link, so organic demand is visible alongside raw volume.",
+      "100 deposits. $2,500. Louder than 1,000 free emails.",
+    proofPoints: [
+      {
+        description: "A clear $25 signal without pretending the card was already charged on-site.",
+        label: "Refundable deposit",
+      },
+      {
+        description: "Personal follow-up confirms timing, lake preference, and deposit collection after submission.",
+        label: "Concierge follow-up",
+      },
+      {
+        description: "Every confirmed signup gets a link so referral rate can prove the market is spreading organically.",
+        label: "Referral proof",
+      },
+    ] satisfies readonly ConversionProofPoint[],
     choices: [
       {
         description:
-          "Keep a free path for visitors who want launch updates before they commit money.",
-        id: "waitlist",
-        label: "Free waitlist",
-        submitLabel: "Join the Free Waitlist",
-        success: {
-          body: "Confirm their lake interest, promise launch updates, and tee up sharing without asking for payment.",
-          title: "Free waitlist success",
-        },
-        valueProps: [
-          "No payment required to raise a hand.",
-          "Captures lake preference and timing interest for launch planning.",
-          "Still unlocks a referral link after a successful signup.",
-        ],
-      },
-      {
-        description:
-          "Frame the $25 refundable deposit as the stronger commitment signal while staying explicit that the amount is refundable.",
+          "Request a refundable $25 deposit to hold priority status before the public launch calendar opens.",
         disclaimer:
-          "Do not imply that payment has already been collected while backend payments remain out of scope.",
+          "Concierge confirms the deposit collection after you submit. Keep every touchpoint explicit that payment is not collected on this page.",
         id: "deposit",
         label: "$25 refundable deposit",
         submitLabel: "Request Deposit Priority",
         success: {
-          body: "Acknowledge the deposit request, explain that payment collection happens later, and move immediately into referral sharing.",
-          title: "Deposit intent success",
+          body: "Your $25 refundable priority request is in. Concierge follow-up comes next to finalize the deposit.",
+          title: "Priority request confirmed",
         },
         valueProps: [
-          "Signals materially stronger intent than a free email signup.",
-          "Keeps the refundable $25 amount explicit in every deposit-facing message.",
-          "Promises priority follow-up without pretending the payment flow is already live.",
+          "Signals stronger intent than a free email without feeling like checkout.",
+          "Keeps the refundable amount and next step legible at a glance.",
+          "Turns each confirmed request into a referral source immediately.",
         ],
       },
     ] satisfies readonly ConversionChoice[],
     referralShare: {
       description:
-        "After any successful signup, prompt sharing so referral rate can prove organic demand instead of relying on pageviews alone.",
+        "Share your private link while the launch request is fresh so organic demand is visible in the next qualified signup attributed back to you.",
       fallbackActionLabel: "Copy link manually",
       helperText:
-        "Friends who arrive from the link can still choose either the free waitlist or the $25 refundable deposit path.",
+        "Referral rate tracks what share of completed deposit requests came from another signup sharing their link.",
       primaryActionLabel: "Copy referral link",
-      title: "Share the signup link",
+      title: "Share to keep the priority list moving",
     } satisfies ReferralShareContent,
-    selectorLabel: "Choose how to show demand",
+    selectorLabel: "Reservation brief",
     selectorSupportingText:
-      "Free signup stays frictionless, while the deposit path communicates stronger booking intent and a refundable $25 commitment.",
-    title: "Two conversion paths, one demand story",
+      "Deposit-only keeps the story sharp: real intent now, concierge confirmation next, referral proof after that.",
+    title: "Request a $25 refundable priority deposit",
   },
   destinationsHeading: "Destinations",
   footerCopyright: `\u00A9 ${currentYear} Luxe Lake Escapes, All Rights Reserved`,
   hero: {
     description:
-      "Experience unparalleled luxury on Georgia's most prestigious waters. Join our exclusive waitlist for priority access to our artisan-crafted yachts and professional captains.",
+      "Reserve launch priority for Georgia's most prestigious waters with a refundable $25 deposit request, concierge follow-up, and a share loop built to prove organic demand.",
     eyebrow: `Coming ${launchSeason}`,
     headline: "The Art of Inland Sailing",
     headlineAccent: "Inland Sailing",
-    primaryAction: { href: "#waitlist", label: "Join Waitlist" },
+    primaryAction: { href: "#deposit", label: "Reserve Priority" },
   },
   lakesSection: {
     body:
       `We are currently gauging real demand to finalize our ${launchSeason} launch fleet locations.`,
-    cta: { href: "#waitlist", label: "Explore Fleet" },
+    cta: { href: "#deposit", label: "Reserve Priority" },
     eyebrow: "Our Launch Markets",
     title: "Explore Georgia's Premier Shores",
   },

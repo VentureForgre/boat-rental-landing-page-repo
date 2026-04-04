@@ -43,8 +43,10 @@ describe("Landing page composition", () => {
       }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("link", { name: /join waitlist/i }),
-    ).toHaveAttribute("href", "#waitlist");
+      screen.getAllByRole("link", { name: /reserve priority/i }).every(
+        (link) => link.getAttribute("href") === "#deposit",
+      ),
+    ).toBe(true);
     expect(
       screen.getByRole("heading", {
         level: 2,
@@ -58,17 +60,21 @@ describe("Landing page composition", () => {
       }),
     ).toBeInTheDocument();
     expect(
-      screen.getAllByText(/choose how to show demand/i),
+      screen.getAllByText(/100 deposits\. \$2,500\. louder than 1,000 free emails/i),
     ).toHaveLength(2);
     expect(
-      screen.getAllByRole("radio", { name: /free waitlist/i }),
+      screen.getAllByRole("heading", {
+        level: 2,
+        name: /request a \$25 refundable priority deposit/i,
+      }),
     ).toHaveLength(2);
     expect(
-      screen.getAllByRole("radio", { name: /\$25 refundable deposit/i }),
-    ).toHaveLength(2);
+      screen.queryByRole("radio", { name: /\$25 refundable deposit/i }),
+    ).not.toBeInTheDocument();
     expect(
-      screen.getAllByRole("button", { name: /join the free waitlist/i }),
+      screen.getAllByRole("button", { name: /request deposit priority/i }),
     ).toHaveLength(2);
+    expect(screen.queryByText(/free waitlist/i)).not.toBeInTheDocument();
     expect(screen.getByText(/concierge@luxelake\.com/i)).toBeInTheDocument();
     expect(
       screen.getByText(
@@ -96,8 +102,9 @@ describe("Landing page composition", () => {
         new Response(
           JSON.stringify({
             ok: true,
-            message: "You are on the Luxe Lake waitlist.",
-            conversionType: "waitlist",
+            message:
+              "Your $25 refundable priority request is in. Concierge follow-up comes next to finalize the deposit.",
+            conversionType: "deposit",
             referralCode: "ZX98YU76",
             shareUrl: "https://luxelake.com/?ref=ZX98YU76",
           }),
@@ -113,8 +120,9 @@ describe("Landing page composition", () => {
         new Response(
           JSON.stringify({
             ok: true,
-            message: "You are on the Luxe Lake waitlist.",
-            conversionType: "waitlist",
+            message:
+              "Your $25 refundable priority request is in. Concierge follow-up comes next to finalize the deposit.",
+            conversionType: "deposit",
             referralCode: "MN34PQ56",
             shareUrl: "https://luxelake.com/?ref=MN34PQ56",
           }),
@@ -136,12 +144,12 @@ describe("Landing page composition", () => {
     fireEvent.change(within(hero).getByRole("textbox", { name: /ready to book/i }), {
       target: { value: "captain@example.com" },
     });
-    fireEvent.click(within(hero).getByRole("button", { name: /join the free waitlist/i }));
+    fireEvent.click(within(hero).getByRole("button", { name: /request deposit priority/i }));
 
     fireEvent.change(within(footer).getByRole("textbox", { name: /your email address/i }), {
       target: { value: "crew@example.com" },
     });
-    fireEvent.click(within(footer).getByRole("button", { name: /join the free waitlist/i }));
+    fireEvent.click(within(footer).getByRole("button", { name: /request deposit priority/i }));
 
     await waitFor(() => {
       expect(fetchMock).toHaveBeenCalledTimes(2);
@@ -153,7 +161,7 @@ describe("Landing page composition", () => {
         email: "captain@example.com",
         preferredLake: "lake-sidney-lanier",
         source: "hero",
-        conversionType: "waitlist",
+        conversionType: "deposit",
         referralCode: "AB12CD34",
       }),
     });
@@ -163,7 +171,7 @@ describe("Landing page composition", () => {
         email: "crew@example.com",
         preferredLake: "lake-sidney-lanier",
         source: "footer",
-        conversionType: "waitlist",
+        conversionType: "deposit",
         referralCode: "AB12CD34",
       }),
     });
