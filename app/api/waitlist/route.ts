@@ -9,6 +9,21 @@ function jsonResponse(body: WaitlistResponse, status: number) {
   return NextResponse.json(body, { status });
 }
 
+function buildShareUrl(requestUrl: string, referralCode: string) {
+  const shareUrl = new URL("/", requestUrl);
+  shareUrl.searchParams.set("ref", referralCode);
+
+  return shareUrl.toString();
+}
+
+function getSuccessMessage(conversionType: "waitlist" | "deposit") {
+  if (conversionType === "deposit") {
+    return "Your refundable deposit request is recorded for priority follow-up.";
+  }
+
+  return "You are on the Luxe Lake waitlist.";
+}
+
 export async function POST(request: Request) {
   let payload: unknown;
 
@@ -31,12 +46,15 @@ export async function POST(request: Request) {
   }
 
   try {
-    await saveWaitlistEntry(validation.data);
+    const entry = await saveWaitlistEntry(validation.data);
 
     return jsonResponse(
       {
         ok: true,
-        message: "You are on the Luxe Lake waitlist.",
+        message: getSuccessMessage(entry.conversionType),
+        conversionType: entry.conversionType,
+        referralCode: entry.referralCode,
+        shareUrl: buildShareUrl(request.url, entry.referralCode),
       },
       200,
     );
