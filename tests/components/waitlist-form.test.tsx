@@ -43,10 +43,17 @@ describe("WaitlistForm", () => {
     expect(heroButton.className).not.toContain("rounded");
   });
 
-  it("renders a deposit-only reservation brief with elevated demand-proof copy", async () => {
+  it("keeps the footer form on the original simple layout with deposit copy", async () => {
     const { WaitlistForm } = await import("@/components/landing/waitlist-form");
 
     render(<WaitlistForm source="footer" />);
+
+    const footerButton = screen.getByRole("button", {
+      name: /request deposit priority/i,
+    });
+    const footerLakeField = screen.getByRole("combobox", {
+      name: /select your lake/i,
+    });
 
     expect(
       screen.queryByRole("radio", { name: /\$25 refundable deposit/i }),
@@ -54,27 +61,26 @@ describe("WaitlistForm", () => {
     expect(
       screen.getByRole("heading", {
         level: 2,
-        name: /request a \$25 refundable priority deposit/i,
+        name: /priority deposit request/i,
       }),
     ).toBeInTheDocument();
-    expect(screen.getByText(/100 deposits\. \$2,500\. louder than 1,000 free emails/i)).toBeInTheDocument();
-    expect(screen.getAllByText(/refundable deposit/i).length).toBeGreaterThan(0);
-    expect(screen.getByText(/concierge follow-up/i)).toBeInTheDocument();
-    expect(screen.getByText(/referral proof/i)).toBeInTheDocument();
     expect(screen.getByText(/launch priority for lake sidney lanier/i)).toBeInTheDocument();
+    expect(
+      screen.queryByText(/100 deposits\. \$2,500\. louder than 1,000 free emails/i),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByText(/referral proof/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/concierge follow-up/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/reservation brief/i)).not.toBeInTheDocument();
 
     expect(
       screen.getByRole("textbox", { name: /your email address/i }),
     ).toBeInTheDocument();
-    expect(
-      screen.getByRole("button", { name: /request deposit priority/i }),
-    ).toHaveClass("w-full");
-    expect(
-      screen.getByRole("combobox", { name: /select your lake/i }),
-    ).toHaveDisplayValue(/lake sidney lanier/i);
-    expect(
-      screen.getAllByText(/concierge confirms the deposit collection after you submit/i).length,
-    ).toBeGreaterThan(0);
+    expect(footerButton).toHaveClass("bg-[var(--color-background)]");
+    expect(footerButton.className).not.toContain("rounded");
+    expect(footerLakeField).toHaveDisplayValue(/lake sidney lanier/i);
+    expect(footerLakeField.className).toContain("rounded-none");
+    expect(screen.getByText(/choose the lake where concierge should prioritize your launch window/i)).toBeInTheDocument();
+    expect(screen.getByText(/concierge confirms the deposit collection after you submit/i)).toBeInTheDocument();
   });
 
   it("shows a client-side validation message before posting invalid email", async () => {

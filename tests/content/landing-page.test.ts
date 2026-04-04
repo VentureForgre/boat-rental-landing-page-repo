@@ -125,12 +125,13 @@ describe("landing-page content", () => {
     expect(conversionFlow?.referralShare?.fallbackActionLabel).toContain("manual");
   });
 
-  it("keeps the hero deposit copy intentionally short while footer surfaces keep the longer brief", () => {
+  it("keeps the hero deposit copy intentionally short while the footer stays utility-first", () => {
     expect(waitlistSurfaceContent.hero.title).toMatch(/deposit/i);
     expect(waitlistSurfaceContent.hero.formIntro).toMatch(/priority access/i);
     expect(waitlistSurfaceContent.hero.supportingText).toBeUndefined();
 
     expect(waitlistSurfaceContent.footer.title).toMatch(/priority deposit request/i);
+    expect(waitlistSurfaceContent.footer.formIntro).toMatch(/prioritize your launch window/i);
     expect(waitlistSurfaceContent.footer.supportingText).toMatch(/launch priority/i);
     expect(landingPageContent.conversionFlow.proofPoints).toHaveLength(3);
   });

@@ -2,7 +2,6 @@
 
 import { useId, useRef, useState, type FormEvent } from "react";
 import {
-  footerReservationBriefContent,
   heroDepositCardContent,
   landingPageContent,
   type LakeId,
@@ -165,43 +164,27 @@ export function WaitlistForm({
   const fieldClassName =
     source === "hero"
       ? "w-full border border-[var(--color-background)]/15 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-[var(--color-accent)]"
-      : "w-full rounded-xl border border-white/15 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-[var(--color-accent)]";
+      : "w-full rounded-none border border-white/15 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-[var(--color-accent)]";
   const proofPanelClassName =
-    source === "hero"
-      ? "overflow-hidden border border-slate-200 bg-[linear-gradient(145deg,rgba(255,255,255,0.98),rgba(248,243,235,0.92))] shadow-[0_24px_80px_rgba(15,23,42,0.14)]"
-      : "overflow-hidden rounded-[1.75rem] border border-white/15 bg-[linear-gradient(145deg,rgba(18,29,46,0.92),rgba(10,18,30,0.86))] shadow-[0_24px_80px_rgba(0,0,0,0.28)]";
+    "overflow-hidden border border-slate-200 bg-[linear-gradient(145deg,rgba(255,255,255,0.98),rgba(248,243,235,0.92))] shadow-[0_24px_80px_rgba(15,23,42,0.14)]";
   const proofEyebrowClassName =
-    source === "hero" ? "text-xs font-semibold uppercase tracking-[0.28em] text-[var(--color-accent-strong)]" : "text-xs font-semibold uppercase tracking-[0.28em] text-[var(--color-accent)]";
-  const proofTitleClassName =
-    source === "hero" ? "text-2xl text-slate-950 sm:text-3xl" : "text-2xl text-white";
-  const proofDescriptionClassName =
-    source === "hero" ? "text-sm leading-7 text-slate-600" : "text-sm leading-7 text-slate-300";
-  const proofPointClassName =
-    source === "hero"
-      ? "rounded-[1.5rem] border border-slate-200 bg-white/95 p-4 shadow-[0_18px_45px_rgba(15,23,42,0.08)]"
-      : "rounded-[1.5rem] border border-white/10 bg-white/5 p-4 shadow-[0_18px_45px_rgba(0,0,0,0.18)]";
-  const proofDisclaimerClassName =
-    source === "hero" ? "text-xs leading-6 text-amber-700" : "text-xs leading-6 text-amber-300";
-  const proofLabelClassName =
-    source === "hero"
-      ? "text-xs font-semibold uppercase tracking-[0.22em] text-[var(--color-accent-strong)]"
-      : "text-xs font-semibold uppercase tracking-[0.22em] text-[var(--color-accent)]";
-  const proofValueClassName =
-    source === "hero" ? "mt-3 text-lg text-slate-950" : "mt-3 text-lg text-white";
+    "text-xs font-semibold uppercase tracking-[0.28em] text-[var(--color-accent-strong)]";
+  const proofTitleClassName = "text-2xl text-slate-950 sm:text-3xl";
+  const proofDescriptionClassName = "text-sm leading-7 text-slate-600";
   const formShellClassName =
     source === "hero"
       ? "border border-slate-200/80 bg-white/88 p-5 shadow-[0_18px_60px_rgba(15,23,42,0.12)] backdrop-blur sm:p-6"
-      : "rounded-[1.75rem] border border-white/10 bg-white/6 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.24)] backdrop-blur sm:p-6";
+      : "";
   const fieldLayoutClassName =
     layoutMode === "stacked" ? "grid gap-4" : "grid gap-4 sm:grid-cols-2";
   const buttonClassName =
     source === "hero"
       ? "inline-flex w-full items-center justify-center bg-[var(--color-accent)] px-6 py-3 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-background)] transition hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-70"
-      : "inline-flex w-full items-center justify-center rounded-xl bg-[linear-gradient(135deg,var(--color-accent),#b88d55)] px-6 py-3 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-background)] transition hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-70";
+      : "inline-flex w-full items-center justify-center bg-[var(--color-background)] px-6 py-3 text-xs font-semibold uppercase tracking-[0.2em] text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-70";
   const sharePanelClassName =
     source === "hero"
       ? "space-y-3 border border-emerald-200 bg-emerald-50/95 p-4 text-slate-900"
-      : "space-y-3 rounded-[1.5rem] border border-emerald-300/30 bg-emerald-500/10 p-4 text-white";
+      : "space-y-3 border border-emerald-300/30 bg-emerald-500/10 p-4 text-white";
   const shareButtonLabel = canCopyReferralLink
     ? shareStatus === "copied"
       ? "Copied link"
@@ -333,65 +316,18 @@ export function WaitlistForm({
           </div>
         </section>
       ) : (
-      <section className={proofPanelClassName}>
-        <div className="grid gap-6 p-5 sm:p-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]">
-          <div className="space-y-6">
-            <div className="space-y-3">
-              <p className={proofEyebrowClassName}>{footerReservationBriefContent.eyebrow}</p>
-              <div className="space-y-2">
-                <h2 className={proofTitleClassName}>{conversionFlow.title}</h2>
-                <p className={proofDescriptionClassName}>{conversionFlow.description}</p>
-              </div>
-              <div className="inline-flex rounded-full border border-[var(--color-accent)]/30 bg-[var(--color-accent)]/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-accent-strong)]">
-                {footerReservationBriefContent.metricCallout}
-              </div>
-            </div>
-            <div className="grid gap-3 md:grid-cols-3">
-              {conversionFlow.proofPoints.map((proofPoint) => (
-                <article className={proofPointClassName} key={proofPoint.label}>
-                  <p className={proofLabelClassName}>{proofPoint.label}</p>
-                  <p className={proofValueClassName}>{proofPoint.description}</p>
-                </article>
-              ))}
-            </div>
-            <div className="rounded-[1.5rem] border border-[var(--color-accent)]/20 bg-[linear-gradient(140deg,rgba(193,164,126,0.16),rgba(193,164,126,0.04))] p-5">
-              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-inherit">
-                {selectedChoice.label}
-              </p>
-              <p className={`${proofDescriptionClassName} mt-3`}>
-                {selectedChoice.description}
-              </p>
-              <ul className="mt-4 space-y-2">
-                {selectedChoice.valueProps.map((valueProp) => (
-                  <li className={`${proofDescriptionClassName} flex items-start gap-3`} key={valueProp}>
-                    <span className="mt-2 h-1.5 w-1.5 rounded-full bg-[var(--color-accent)]" />
-                    <span>{valueProp}</span>
-                  </li>
-                ))}
-              </ul>
-              {selectedChoice.disclaimer ? (
-                <p className={`${proofDisclaimerClassName} mt-4`}>
-                  {selectedChoice.disclaimer}
-                </p>
+        <>
+          {surface.title ? (
+            <div className="space-y-2">
+              <h2 className="text-xl font-medium text-white">{surface.title}</h2>
+              <p className="text-sm text-slate-300">{surface.formIntro}</p>
+              {surface.supportingText ? (
+                <p className="text-sm text-slate-300">{surface.supportingText}</p>
               ) : null}
             </div>
-          </div>
-          <div className={formShellClassName}>
-            {surface.title ? (
-              <div className="space-y-2">
-                <h3 className="text-2xl text-white">
-                  {surface.title}
-                </h3>
-                <p className={proofDescriptionClassName}>{surface.formIntro}</p>
-                {surface.supportingText ? (
-                  <p className={proofDescriptionClassName}>{surface.supportingText}</p>
-                ) : null}
-              </div>
-            ) : null}
-            <div className="mt-6 space-y-4">{formFields}</div>
-          </div>
-        </div>
-      </section>
+          ) : null}
+          <div className="space-y-4">{formFields}</div>
+        </>
       )}
     </form>
   );

@@ -60,9 +60,6 @@ describe("Landing page composition", () => {
       }),
     ).toBeInTheDocument();
     expect(
-      screen.getByText(/100 deposits\. \$2,500\. louder than 1,000 free emails/i),
-    ).toBeInTheDocument();
-    expect(
       screen.getByRole("heading", {
         level: 2,
         name: /request a refundable \$25 deposit/i,
@@ -93,6 +90,9 @@ describe("Landing page composition", () => {
     ).not.toBeInTheDocument();
     expect(
       within(screen.getByRole("banner")).queryByText(/100 deposits\. \$2,500\. louder than 1,000 free emails/i),
+    ).not.toBeInTheDocument();
+    expect(
+      within(screen.getByRole("contentinfo")).queryByText(/reservation brief/i),
     ).not.toBeInTheDocument();
     expect(
       screen.getByRole("contentinfo").querySelector(".rounded-\\[2rem\\]"),
