@@ -11,6 +11,16 @@ describe("WaitlistForm", () => {
 
     render(<WaitlistForm source="hero" />);
 
+    const heroSection = screen
+      .getByRole("heading", {
+        level: 2,
+        name: /request a refundable \$25 deposit/i,
+      })
+      .closest("section");
+    const heroButton = screen.getByRole("button", {
+      name: /request deposit priority/i,
+    });
+
     expect(
       screen.getByRole("heading", {
         level: 2,
@@ -29,6 +39,8 @@ describe("WaitlistForm", () => {
     expect(
       screen.getByRole("textbox", { name: /ready to book/i }),
     ).toBeInTheDocument();
+    expect(heroSection?.className).not.toContain("rounded");
+    expect(heroButton.className).not.toContain("rounded");
   });
 
   it("renders a deposit-only reservation brief with elevated demand-proof copy", async () => {

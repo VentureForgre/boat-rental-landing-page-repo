@@ -164,11 +164,11 @@ export function WaitlistForm({
         : "text-amber-300";
   const fieldClassName =
     source === "hero"
-      ? "w-full rounded-xl border border-[var(--color-background)]/15 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-[var(--color-accent)]"
+      ? "w-full border border-[var(--color-background)]/15 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-[var(--color-accent)]"
       : "w-full rounded-xl border border-white/15 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-[var(--color-accent)]";
   const proofPanelClassName =
     source === "hero"
-      ? "overflow-hidden rounded-[1.75rem] border border-slate-200 bg-[linear-gradient(145deg,rgba(255,255,255,0.98),rgba(248,243,235,0.92))] shadow-[0_24px_80px_rgba(15,23,42,0.14)]"
+      ? "overflow-hidden border border-slate-200 bg-[linear-gradient(145deg,rgba(255,255,255,0.98),rgba(248,243,235,0.92))] shadow-[0_24px_80px_rgba(15,23,42,0.14)]"
       : "overflow-hidden rounded-[1.75rem] border border-white/15 bg-[linear-gradient(145deg,rgba(18,29,46,0.92),rgba(10,18,30,0.86))] shadow-[0_24px_80px_rgba(0,0,0,0.28)]";
   const proofEyebrowClassName =
     source === "hero" ? "text-xs font-semibold uppercase tracking-[0.28em] text-[var(--color-accent-strong)]" : "text-xs font-semibold uppercase tracking-[0.28em] text-[var(--color-accent)]";
@@ -190,15 +190,17 @@ export function WaitlistForm({
     source === "hero" ? "mt-3 text-lg text-slate-950" : "mt-3 text-lg text-white";
   const formShellClassName =
     source === "hero"
-      ? "rounded-[1.75rem] border border-slate-200/80 bg-white/88 p-5 shadow-[0_18px_60px_rgba(15,23,42,0.12)] backdrop-blur sm:p-6"
+      ? "border border-slate-200/80 bg-white/88 p-5 shadow-[0_18px_60px_rgba(15,23,42,0.12)] backdrop-blur sm:p-6"
       : "rounded-[1.75rem] border border-white/10 bg-white/6 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.24)] backdrop-blur sm:p-6";
   const fieldLayoutClassName =
     layoutMode === "stacked" ? "grid gap-4" : "grid gap-4 sm:grid-cols-2";
   const buttonClassName =
-    "inline-flex w-full items-center justify-center rounded-xl bg-[linear-gradient(135deg,var(--color-accent),#b88d55)] px-6 py-3 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-background)] transition hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-70";
+    source === "hero"
+      ? "inline-flex w-full items-center justify-center bg-[var(--color-accent)] px-6 py-3 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-background)] transition hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-70"
+      : "inline-flex w-full items-center justify-center rounded-xl bg-[linear-gradient(135deg,var(--color-accent),#b88d55)] px-6 py-3 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-background)] transition hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-70";
   const sharePanelClassName =
     source === "hero"
-      ? "space-y-3 rounded-[1.5rem] border border-emerald-200 bg-emerald-50/95 p-4 text-slate-900"
+      ? "space-y-3 border border-emerald-200 bg-emerald-50/95 p-4 text-slate-900"
       : "space-y-3 rounded-[1.5rem] border border-emerald-300/30 bg-emerald-500/10 p-4 text-white";
   const shareButtonLabel = canCopyReferralLink
     ? shareStatus === "copied"
