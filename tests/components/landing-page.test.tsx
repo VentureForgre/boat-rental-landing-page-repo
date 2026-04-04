@@ -1,5 +1,5 @@
 import type { ComponentPropsWithoutRef } from "react";
-import { fireEvent, render, screen, within } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import HomePage from "@/app/page";
 
 vi.mock("next/font/google", () => ({
@@ -29,43 +29,28 @@ const { default: RootLayout } = await import("@/app/layout");
 describe("Landing page composition", () => {
   const currentYear = new Date().getFullYear();
 
-  it("renders the expected sections, lakes, and waitlist surfaces", () => {
-    const { container } = render(<HomePage />);
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it("renders the expected sections, lakes, and both conversion surfaces without referral context", async () => {
+    const { container } = render(await HomePage({}));
 
     expect(
-      screen.getByRole("link", { name: /join waitlist/i }),
-    ).toHaveAttribute("href", "#waitlist");
+      screen.getByRole("heading", {
+        level: 1,
+        name: /the art of inland sailing/i,
+      }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getAllByRole("link", { name: /reserve priority/i }).every(
+        (link) => link.getAttribute("href") === "#deposit",
+      ),
+    ).toBe(true);
     expect(
       screen.getByRole("heading", {
         level: 2,
         name: /explore georgia's premier shores/i,
-      }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("heading", { level: 3, name: /lake sidney lanier/i }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("heading", { level: 3, name: /allatoona lake/i }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("heading", { level: 3, name: /hartwell lake/i }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("heading", {
-        level: 3,
-        name: /j\. strom thurmond lake/i,
-      }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("heading", {
-        level: 3,
-        name: /walter f\. george lake/i,
-      }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("heading", {
-        level: 2,
-        name: /unrivaled safety, comfort & style/i,
       }),
     ).toBeInTheDocument();
     expect(
@@ -76,12 +61,18 @@ describe("Landing page composition", () => {
     ).toBeInTheDocument();
     expect(
       screen.getByRole("heading", {
-        level: 3,
-        name: /professional captains/i,
+        level: 2,
+        name: /request a refundable \$25 deposit/i,
       }),
     ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("radio", { name: /\$25 refundable deposit/i }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getAllByRole("button", { name: /request deposit priority/i }),
+    ).toHaveLength(2);
+    expect(screen.queryByText(/free waitlist/i)).not.toBeInTheDocument();
     expect(screen.getByText(/concierge@luxelake\.com/i)).toBeInTheDocument();
-    expect(screen.getByText(/primary market .* launch priority/i)).toBeInTheDocument();
     expect(
       screen.getByText(
         new RegExp(`${currentYear} luxe lake escapes, all rights reserved`, "i"),
@@ -95,9 +86,17 @@ describe("Landing page composition", () => {
     ).toBeInTheDocument();
     expect(screen.getAllByRole("combobox", { name: /select your lake/i })).toHaveLength(2);
     expect(
-      screen.getByRole("button", { name: /join the waitlist/i }),
-    ).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /submit/i })).toBeInTheDocument();
+      within(screen.getByRole("banner")).queryByText(/referral proof/i),
+    ).not.toBeInTheDocument();
+    expect(
+      within(screen.getByRole("banner")).queryByText(/100 deposits\. \$2,500\. louder than 1,000 free emails/i),
+    ).not.toBeInTheDocument();
+    expect(
+      within(screen.getByRole("contentinfo")).queryByText(/reservation brief/i),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("contentinfo").querySelector(".rounded-\\[2rem\\]"),
+    ).toBeNull();
     expect(
       container.querySelector('img[src*="AB6AXuA0T4Z2ypI0eBJgupQzvWlIf9-gSx5gm0BwhAWYj_KtpY-y0v_BoTq3Rta3qv4YFs0lefLx8FfMKr-HfmmTnqPjLcd6h6qBtiK79HlomyqG4oe1LYK0NBRSl6pbyNkn9XOMJtZP5CWruiMrzrxeqwyoftuto_9ZtvVtL9HAsjZF0ZXAXOsoD7tKqlsrJeIZ0vpHxHKncvmnHEEvSdP4mVGUnvzN4YzEA_nmWPiazYz2rXCXiwCgsuGbR_9ZaOQnxK4KuPpSl0g70so_"][loading="eager"]'),
     ).not.toBeNull();
@@ -105,8 +104,91 @@ describe("Landing page composition", () => {
     expect(container.querySelector('[data-testid="lakes-fade-transition"]')).not.toBeNull();
   });
 
-  it("exposes a keyboard skip link and a toggleable mobile navigation menu", () => {
-    const layout = RootLayout({ children: <HomePage /> });
+  it("includes the referral code in submissions from both the hero and footer surfaces", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(
+        new Response(
+          JSON.stringify({
+            ok: true,
+            message:
+              "Your $25 refundable priority request is in. Concierge follow-up comes next to finalize the deposit.",
+            conversionType: "deposit",
+            referralCode: "ZX98YU76",
+            shareUrl: "https://luxelake.com/?ref=ZX98YU76",
+          }),
+          {
+            status: 200,
+            headers: {
+              "content-type": "application/json",
+            },
+          },
+        ),
+      )
+      .mockResolvedValueOnce(
+        new Response(
+          JSON.stringify({
+            ok: true,
+            message:
+              "Your $25 refundable priority request is in. Concierge follow-up comes next to finalize the deposit.",
+            conversionType: "deposit",
+            referralCode: "MN34PQ56",
+            shareUrl: "https://luxelake.com/?ref=MN34PQ56",
+          }),
+          {
+            status: 200,
+            headers: {
+              "content-type": "application/json",
+            },
+          },
+        ),
+      );
+    vi.stubGlobal("fetch", fetchMock);
+
+    render(await HomePage({ searchParams: Promise.resolve({ ref: "ab12cd34" }) }));
+
+    const hero = screen.getByRole("banner");
+    const footer = screen.getByRole("contentinfo");
+
+    fireEvent.change(within(hero).getByRole("textbox", { name: /ready to book/i }), {
+      target: { value: "captain@example.com" },
+    });
+    fireEvent.click(within(hero).getByRole("button", { name: /request deposit priority/i }));
+
+    fireEvent.change(within(footer).getByRole("textbox", { name: /your email address/i }), {
+      target: { value: "crew@example.com" },
+    });
+    fireEvent.click(within(footer).getByRole("button", { name: /request deposit priority/i }));
+
+    await waitFor(() => {
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+    });
+
+    expect(fetchMock.mock.calls[0]?.[1]).toMatchObject({
+      method: "POST",
+      body: JSON.stringify({
+        email: "captain@example.com",
+        preferredLake: "lake-sidney-lanier",
+        source: "hero",
+        conversionType: "deposit",
+        referralCode: "AB12CD34",
+      }),
+    });
+    expect(fetchMock.mock.calls[1]?.[1]).toMatchObject({
+      method: "POST",
+      body: JSON.stringify({
+        email: "crew@example.com",
+        preferredLake: "lake-sidney-lanier",
+        source: "footer",
+        conversionType: "deposit",
+        referralCode: "AB12CD34",
+      }),
+    });
+  });
+
+  it("exposes a keyboard skip link and a toggleable mobile navigation menu", async () => {
+    const page = await HomePage({});
+    const layout = RootLayout({ children: page });
 
     render(<>{layout.props.children.props.children}</>);
 

@@ -9,6 +9,17 @@ function jsonResponse(body: WaitlistResponse, status: number) {
   return NextResponse.json(body, { status });
 }
 
+function buildShareUrl(requestUrl: string, referralCode: string) {
+  const shareUrl = new URL("/", requestUrl);
+  shareUrl.searchParams.set("ref", referralCode);
+
+  return shareUrl.toString();
+}
+
+function getSuccessMessage() {
+  return "Your $25 refundable priority request is in. Concierge follow-up comes next to finalize the deposit.";
+}
+
 export async function POST(request: Request) {
   let payload: unknown;
 
@@ -18,7 +29,7 @@ export async function POST(request: Request) {
     return jsonResponse(
       {
         ok: false,
-        message: "We could not read your waitlist request. Please try again.",
+        message: "We could not read your deposit request. Please try again.",
       },
       400,
     );
@@ -31,12 +42,15 @@ export async function POST(request: Request) {
   }
 
   try {
-    await saveWaitlistEntry(validation.data);
+    const entry = await saveWaitlistEntry(validation.data);
 
     return jsonResponse(
       {
         ok: true,
-        message: "You are on the Luxe Lake waitlist.",
+        message: getSuccessMessage(),
+        conversionType: entry.conversionType,
+        referralCode: entry.referralCode,
+        shareUrl: buildShareUrl(request.url, entry.referralCode),
       },
       200,
     );
@@ -44,7 +58,7 @@ export async function POST(request: Request) {
     return jsonResponse(
       {
         ok: false,
-        message: "We could not save your waitlist request. Please try again.",
+        message: "We could not save your deposit request. Please try again.",
       },
       500,
     );
