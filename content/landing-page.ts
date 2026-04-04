@@ -232,15 +232,26 @@ export const waitlistSurfaceContent = {
     defaultLakeId: "lake-sidney-lanier",
     emailLabel: "Ready to Book?",
     emailPlaceholder: "Enter your email for priority follow-up",
-    formIntro: "Tell us where to send the private deposit invite and launch updates.",
+    formIntro: "Priority access before the public launch calendar opens.",
     lakeLabel: "Select Your Lake",
     source: "hero",
     submitLabel: "Request Deposit Priority",
-    supportingText:
-      "Concierge confirms the refundable $25 deposit collection after you submit this request.",
-    title: "Priority deposit request",
+    title: "Request a refundable $25 deposit",
   },
 } satisfies Record<WaitlistSource, WaitlistSurface>;
+
+export const heroDepositCardContent = {
+  eyebrow: "Reserve Priority",
+  title: "Request a refundable $25 deposit",
+  description:
+    "Choose your lake and email. We'll follow up personally to confirm the refundable deposit and priority access.",
+  successIntro: "Priority request confirmed",
+} as const;
+
+export const footerReservationBriefContent = {
+  eyebrow: "Reservation brief",
+  metricCallout: "100 deposits. $2,500. Louder than 1,000 free emails.",
+} as const;
 
 export const landingPageContent = {
   brand: {

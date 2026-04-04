@@ -60,14 +60,14 @@ describe("Landing page composition", () => {
       }),
     ).toBeInTheDocument();
     expect(
-      screen.getAllByText(/100 deposits\. \$2,500\. louder than 1,000 free emails/i),
-    ).toHaveLength(2);
+      screen.getByText(/100 deposits\. \$2,500\. louder than 1,000 free emails/i),
+    ).toBeInTheDocument();
     expect(
-      screen.getAllByRole("heading", {
+      screen.getByRole("heading", {
         level: 2,
-        name: /request a \$25 refundable priority deposit/i,
+        name: /request a refundable \$25 deposit/i,
       }),
-    ).toHaveLength(2);
+    ).toBeInTheDocument();
     expect(
       screen.queryByRole("radio", { name: /\$25 refundable deposit/i }),
     ).not.toBeInTheDocument();
@@ -88,6 +88,12 @@ describe("Landing page composition", () => {
       screen.getByText(new RegExp(`summer ${currentYear} launch fleet locations`, "i")),
     ).toBeInTheDocument();
     expect(screen.getAllByRole("combobox", { name: /select your lake/i })).toHaveLength(2);
+    expect(
+      within(screen.getByRole("banner")).queryByText(/referral proof/i),
+    ).not.toBeInTheDocument();
+    expect(
+      within(screen.getByRole("banner")).queryByText(/100 deposits\. \$2,500\. louder than 1,000 free emails/i),
+    ).not.toBeInTheDocument();
     expect(
       container.querySelector('img[src*="AB6AXuA0T4Z2ypI0eBJgupQzvWlIf9-gSx5gm0BwhAWYj_KtpY-y0v_BoTq3Rta3qv4YFs0lefLx8FfMKr-HfmmTnqPjLcd6h6qBtiK79HlomyqG4oe1LYK0NBRSl6pbyNkn9XOMJtZP5CWruiMrzrxeqwyoftuto_9ZtvVtL9HAsjZF0ZXAXOsoD7tKqlsrJeIZ0vpHxHKncvmnHEEvSdP4mVGUnvzN4YzEA_nmWPiazYz2rXCXiwCgsuGbR_9ZaOQnxK4KuPpSl0g70so_"][loading="eager"]'),
     ).not.toBeNull();

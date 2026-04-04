@@ -6,6 +6,31 @@ describe("WaitlistForm", () => {
     vi.unstubAllGlobals();
   });
 
+  it("renders a compact hero deposit card without the long reservation-brief copy", async () => {
+    const { WaitlistForm } = await import("@/components/landing/waitlist-form");
+
+    render(<WaitlistForm source="hero" />);
+
+    expect(
+      screen.getByRole("heading", {
+        level: 2,
+        name: /request a refundable \$25 deposit/i,
+      }),
+    ).toBeInTheDocument();
+    expect(screen.getByText(/priority access before the public launch calendar opens/i)).toBeInTheDocument();
+    expect(
+      screen.queryByText(/100 deposits\. \$2,500\. louder than 1,000 free emails/i),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByText(/referral proof/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/concierge follow-up/i)).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("combobox", { name: /select your lake/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("textbox", { name: /ready to book/i }),
+    ).toBeInTheDocument();
+  });
+
   it("renders a deposit-only reservation brief with elevated demand-proof copy", async () => {
     const { WaitlistForm } = await import("@/components/landing/waitlist-form");
 
@@ -153,6 +178,7 @@ describe("WaitlistForm", () => {
     expect(
       screen.getByRole("heading", { level: 3, name: /keep the priority list moving/i }),
     ).toBeInTheDocument();
+    expect(screen.queryByText(/100 deposits\. \$2,500\. louder than 1,000 free emails/i)).not.toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: /copy referral link/i }),
     ).toBeInTheDocument();

@@ -125,6 +125,16 @@ describe("landing-page content", () => {
     expect(conversionFlow?.referralShare?.fallbackActionLabel).toContain("manual");
   });
 
+  it("keeps the hero deposit copy intentionally short while footer surfaces keep the longer brief", () => {
+    expect(waitlistSurfaceContent.hero.title).toMatch(/deposit/i);
+    expect(waitlistSurfaceContent.hero.formIntro).toMatch(/priority access/i);
+    expect(waitlistSurfaceContent.hero.supportingText).toBeUndefined();
+
+    expect(waitlistSurfaceContent.footer.title).toMatch(/priority deposit request/i);
+    expect(waitlistSurfaceContent.footer.supportingText).toMatch(/launch priority/i);
+    expect(landingPageContent.conversionFlow.proofPoints).toHaveLength(3);
+  });
+
   it("documents the updated landing-page states and copy hierarchy in design.md", () => {
     const designDocPath = resolve(process.cwd(), "design.md");
 

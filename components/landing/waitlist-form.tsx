@@ -2,6 +2,8 @@
 
 import { useId, useRef, useState, type FormEvent } from "react";
 import {
+  footerReservationBriefContent,
+  heroDepositCardContent,
   landingPageContent,
   type LakeId,
   lakeOptions,
@@ -45,6 +47,7 @@ export function WaitlistForm({
   const surface: WaitlistSurface = waitlistSurfaceContent[source];
   const conversionFlow = landingPageContent.conversionFlow;
   const selectedChoice = conversionFlow.choices[0];
+  const isCompactHero = source === "hero";
   const layoutMode = layout ?? (source === "footer" ? "stacked" : "inline");
   const emailId = useId();
   const lakeId = useId();
@@ -209,23 +212,136 @@ export function WaitlistForm({
         ? "Clipboard access was unavailable, so copy the highlighted link manually."
         : null;
 
+  const formFields = (
+    <>
+      <div className={fieldLayoutClassName}>
+        <div className="space-y-2">
+          <label className={labelClassName} htmlFor={lakeId}>
+            {surface.lakeLabel}
+          </label>
+          <select
+            aria-describedby={lakeDescribedBy}
+            aria-invalid={fieldErrors.preferredLake ? true : undefined}
+            className={fieldClassName}
+            id={lakeId}
+            name="preferredLake"
+            onChange={(event) => setPreferredLake(event.target.value as LakeId)}
+            value={preferredLake}
+          >
+            {lakeOptions.map((lake) => (
+              <option key={lake.id} value={lake.id}>
+                {lake.label}
+              </option>
+            ))}
+          </select>
+          {fieldErrors.preferredLake ? (
+            <p className={fieldErrorClassName} id={lakeErrorId}>
+              {fieldErrors.preferredLake}
+            </p>
+          ) : null}
+        </div>
+        <div className="space-y-2">
+          <label className={labelClassName} htmlFor={emailId}>
+            {surface.emailLabel}
+          </label>
+          <input
+            autoComplete="email"
+            aria-describedby={emailDescribedBy}
+            aria-invalid={fieldErrors.email ? true : undefined}
+            className={fieldClassName}
+            id={emailId}
+            name="email"
+            onChange={(event) => setEmail(event.target.value)}
+            placeholder={surface.emailPlaceholder}
+            type="email"
+            value={email}
+          />
+          {fieldErrors.email ? (
+            <p className={fieldErrorClassName} id={emailErrorId}>
+              {fieldErrors.email}
+            </p>
+          ) : null}
+        </div>
+      </div>
+      <button
+        className={buttonClassName}
+        disabled={status === "loading"}
+        type="submit"
+      >
+        {status === "loading" ? "Submitting..." : selectedChoice.submitLabel}
+      </button>
+      {message ? (
+        <p className={`${formMessageClassName} text-sm`} role={messageRole}>
+          {message}
+        </p>
+      ) : null}
+      {successResponse ? (
+        <section className={sharePanelClassName}>
+          <div className="space-y-1">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-inherit/70">
+              {isCompactHero ? heroDepositCardContent.successIntro : selectedChoice.success.title}
+            </p>
+            <h3 className="text-base font-semibold">{conversionFlow.referralShare.title}</h3>
+            <p className="text-sm">{conversionFlow.referralShare.description}</p>
+            <p className="text-sm">{conversionFlow.referralShare.helperText}</p>
+          </div>
+          <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_auto]">
+            <input
+              className={fieldClassName}
+              readOnly
+              ref={shareInputRef}
+              value={successResponse.shareUrl}
+            />
+            <button
+              className={buttonClassName}
+              onClick={handleCopyReferralLink}
+              type="button"
+            >
+              {shareButtonLabel}
+            </button>
+          </div>
+          {shareStatusMessage ? <p className="text-sm">{shareStatusMessage}</p> : null}
+        </section>
+      ) : null}
+    </>
+  );
+
   return (
     <form
       className={className ?? "space-y-4"}
       noValidate
       onSubmit={handleSubmit}
     >
+      {isCompactHero ? (
+        <section className={proofPanelClassName}>
+          <div className="space-y-6 p-5 sm:p-6">
+            <div className="space-y-3">
+              <p className={proofEyebrowClassName}>{heroDepositCardContent.eyebrow}</p>
+              <div className="space-y-2">
+                <h2 className={proofTitleClassName}>{heroDepositCardContent.title}</h2>
+                <p className={proofDescriptionClassName}>{heroDepositCardContent.description}</p>
+              </div>
+            </div>
+            <div className={formShellClassName}>
+              <div className="space-y-2">
+                <p className={proofDescriptionClassName}>{surface.formIntro}</p>
+              </div>
+              <div className="mt-6 space-y-4">{formFields}</div>
+            </div>
+          </div>
+        </section>
+      ) : (
       <section className={proofPanelClassName}>
         <div className="grid gap-6 p-5 sm:p-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]">
           <div className="space-y-6">
             <div className="space-y-3">
-              <p className={proofEyebrowClassName}>{conversionFlow.selectorLabel}</p>
+              <p className={proofEyebrowClassName}>{footerReservationBriefContent.eyebrow}</p>
               <div className="space-y-2">
                 <h2 className={proofTitleClassName}>{conversionFlow.title}</h2>
                 <p className={proofDescriptionClassName}>{conversionFlow.description}</p>
               </div>
               <div className="inline-flex rounded-full border border-[var(--color-accent)]/30 bg-[var(--color-accent)]/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-accent-strong)]">
-                {conversionFlow.metricCallout}
+                {footerReservationBriefContent.metricCallout}
               </div>
             </div>
             <div className="grid gap-3 md:grid-cols-3">
@@ -261,7 +377,7 @@ export function WaitlistForm({
           <div className={formShellClassName}>
             {surface.title ? (
               <div className="space-y-2">
-                <h3 className={source === "hero" ? "text-2xl text-slate-950" : "text-2xl text-white"}>
+                <h3 className="text-2xl text-white">
                   {surface.title}
                 </h3>
                 <p className={proofDescriptionClassName}>{surface.formIntro}</p>
@@ -270,100 +386,11 @@ export function WaitlistForm({
                 ) : null}
               </div>
             ) : null}
-            <div className="mt-6 space-y-4">
-              <div className={fieldLayoutClassName}>
-                <div className="space-y-2">
-                  <label className={labelClassName} htmlFor={lakeId}>
-                    {surface.lakeLabel}
-                  </label>
-                  <select
-                    aria-describedby={lakeDescribedBy}
-                    aria-invalid={fieldErrors.preferredLake ? true : undefined}
-                    className={fieldClassName}
-                    id={lakeId}
-                    name="preferredLake"
-                    onChange={(event) => setPreferredLake(event.target.value as LakeId)}
-                    value={preferredLake}
-                  >
-                    {lakeOptions.map((lake) => (
-                      <option key={lake.id} value={lake.id}>
-                        {lake.label}
-                      </option>
-                    ))}
-                  </select>
-                  {fieldErrors.preferredLake ? (
-                    <p className={fieldErrorClassName} id={lakeErrorId}>
-                      {fieldErrors.preferredLake}
-                    </p>
-                  ) : null}
-                </div>
-                <div className="space-y-2">
-                  <label className={labelClassName} htmlFor={emailId}>
-                    {surface.emailLabel}
-                  </label>
-                  <input
-                    autoComplete="email"
-                    aria-describedby={emailDescribedBy}
-                    aria-invalid={fieldErrors.email ? true : undefined}
-                    className={fieldClassName}
-                    id={emailId}
-                    name="email"
-                    onChange={(event) => setEmail(event.target.value)}
-                    placeholder={surface.emailPlaceholder}
-                    type="email"
-                    value={email}
-                  />
-                  {fieldErrors.email ? (
-                    <p className={fieldErrorClassName} id={emailErrorId}>
-                      {fieldErrors.email}
-                    </p>
-                  ) : null}
-                </div>
-              </div>
-              <button
-                className={buttonClassName}
-                disabled={status === "loading"}
-                type="submit"
-              >
-                {status === "loading" ? "Submitting..." : selectedChoice.submitLabel}
-              </button>
-              {message ? (
-                <p className={`${formMessageClassName} text-sm`} role={messageRole}>
-                  {message}
-                </p>
-              ) : null}
-              {successResponse ? (
-                <section className={sharePanelClassName}>
-                  <div className="space-y-1">
-                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-inherit/70">
-                      {selectedChoice.success.title}
-                    </p>
-                    <h3 className="text-base font-semibold">{conversionFlow.referralShare.title}</h3>
-                    <p className="text-sm">{conversionFlow.referralShare.description}</p>
-                    <p className="text-sm">{conversionFlow.referralShare.helperText}</p>
-                  </div>
-                  <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_auto]">
-                    <input
-                      className={fieldClassName}
-                      readOnly
-                      ref={shareInputRef}
-                      value={successResponse.shareUrl}
-                    />
-                    <button
-                      className={buttonClassName}
-                      onClick={handleCopyReferralLink}
-                      type="button"
-                    >
-                      {shareButtonLabel}
-                    </button>
-                  </div>
-                  {shareStatusMessage ? <p className="text-sm">{shareStatusMessage}</p> : null}
-                </section>
-              ) : null}
-            </div>
+            <div className="mt-6 space-y-4">{formFields}</div>
           </div>
         </div>
       </section>
+      )}
     </form>
   );
 }
