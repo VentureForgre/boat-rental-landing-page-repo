@@ -61,6 +61,23 @@ export type WaitlistSurface = {
   title?: string;
 };
 
+export type OfferPopupContent = {
+  body: string;
+  ctaLabel: string;
+  dismissLabel: string;
+  emailLabel: string;
+  emailPlaceholder: string;
+  headline: string;
+  successMessage: string;
+  submitLabel: string;
+  triggers: {
+    delaySeconds: number;
+    dismissCooldownHours: number;
+    maxDailyImpressions: number;
+    submittedSuppressionDays: number;
+  };
+};
+
 const currentYear = new Date().getFullYear();
 const launchSeason = `Summer ${currentYear}`;
 
@@ -175,15 +192,15 @@ export const benefitCards = [
   },
   {
     description:
-      "Secure your spot now for our inaugural season of luxury charters.",
+      "Place $200 today and keep the flexibility to reserve any 2 charter days later.",
     icon: "verified",
-    title: `Coming ${launchSeason}`,
+    title: "Today's Offer Only",
   },
   {
     description:
-      "Waitlist members receive first access to calendar dates before the public.",
+      "Claim the offer now and our concierge team will map out the right dates, vessel, and next steps.",
     icon: "calendar",
-    title: "Ready to Book",
+    title: "Reserve Any 2 Charter Days Later",
   },
 ] satisfies readonly BenefitCard[];
 
@@ -191,40 +208,59 @@ export const waitlistSurfaceContent = {
   footer: {
     defaultLakeId: "lake-sidney-lanier",
     emailLabel: "Your Email Address",
-    emailPlaceholder: "Your Email Address",
+    emailPlaceholder: "Enter your email for today's offer details",
     lakeLabel: "Select Your Lake",
     source: "footer",
-    submitLabel: "Submit",
+    submitLabel: "Send Offer Details",
     supportingText:
-      "Select your preferred lake to stay updated on launch dates.",
-    title: "Join the Waitlist",
+      "Choose your preferred lake and we will send the $200 today for any 2 days offer details.",
+    title: "Get The $200 Offer",
   },
   hero: {
     defaultLakeId: "lake-sidney-lanier",
-    emailLabel: "Ready to Book?",
-    emailPlaceholder: "Enter your email for early access",
+    emailLabel: "Ready to Reserve?",
+    emailPlaceholder: "Enter your email to claim today's $200 offer",
     lakeLabel: "Select Your Lake",
     source: "hero",
-    submitLabel: "Join the Waitlist",
+    submitLabel: "Claim Offer",
   },
 } satisfies Record<WaitlistSource, WaitlistSurface>;
+
+export const offerPopupContent = {
+  body:
+    "Enter your email to unlock 30% off and get the $200 today for any 2 days offer details before you leave.",
+  ctaLabel: "Unlock 30% Off",
+  dismissLabel: "Continue Browsing",
+  emailLabel: "Email Address",
+  emailPlaceholder: "Enter your email",
+  headline: "Unlock 30% Off Your Luxe Lake Charter",
+  successMessage:
+    "You unlocked 30% off. Check your inbox for the Luxe Lake offer details.",
+  submitLabel: "Unlock My 30% Off",
+  triggers: {
+    delaySeconds: 6,
+    dismissCooldownHours: 72,
+    maxDailyImpressions: 2,
+    submittedSuppressionDays: 30,
+  },
+} satisfies OfferPopupContent;
 
 export const landingPageContent = {
   brand: {
     icon: "sailing" as LandingIconName,
     name: "Luxe Lake",
     summary:
-      "Georgia's premier luxury yacht charter experience. Artisan-crafted vessels for those ready to book the extraordinary.",
+      "Georgia's premier luxury yacht charter experience. Claim today's $200 offer and redeem it later for any two charter days with concierge guidance.",
     wordmark: "Luxe Lake Escapes",
   },
   closingCta: {
     actions: [
-      { href: "#waitlist", label: "Request Early Access" },
-      { href: "#waitlist", label: "Get Fleet Updates" },
+      { href: "#waitlist", label: "Claim Deposit Details" },
+      { href: "#concierge", label: "Talk To Concierge" },
     ],
     body:
-      "Show Real Interest and Be The First To Book. Connect With Our Concierge Team At +1 (800) LUXE-LAKE.",
-    title: "Secure Your Launch Priority",
+      "Place your $200 deposit today, redeem it later for any two charter days you choose, and let our concierge team prepare the experience.",
+    title: "Reserve Any 2 Charter Days With $200 Today",
   },
   concierge: {
     email: "concierge@luxelake.com",
@@ -237,16 +273,16 @@ export const landingPageContent = {
   footerCopyright: `\u00A9 ${currentYear} Luxe Lake Escapes, All Rights Reserved`,
   hero: {
     description:
-      "Experience unparalleled luxury on Georgia's most prestigious waters. Join our exclusive waitlist for priority access to our artisan-crafted yachts and professional captains.",
-    eyebrow: `Coming ${launchSeason}`,
-    headline: "The Art of Inland Sailing",
-    headlineAccent: "Inland Sailing",
-    primaryAction: { href: "#waitlist", label: "Join Waitlist" },
+      "Reserve your escape with $200 today for any 2 days, then redeem it later for any two charter days you choose with Luxe Lake concierge support.",
+    eyebrow: "Today's Offer Only",
+    headline: "Reserve Today",
+    headlineAccent: "$200 for Any 2 Days",
+    primaryAction: { href: "#waitlist", label: "Claim Today's Offer" },
   },
   lakesSection: {
     body:
-      `We are currently gauging real demand to finalize our ${launchSeason} launch fleet locations.`,
-    cta: { href: "#waitlist", label: "Explore Fleet" },
+      `Select your preferred shore and we will pair today's $200 two-day offer with our ${launchSeason} launch fleet locations.`,
+    cta: { href: "#waitlist", label: "Choose Your Lake" },
     eyebrow: "Our Launch Markets",
     title: "Explore Georgia's Premier Shores",
   },
@@ -261,7 +297,7 @@ export const landingPageContent = {
   ],
   standardSection: {
     body:
-      "As a new luxury brand entering the Georgia market, we are committed to setting a new benchmark for excellence on the water. Every charter includes white-glove service from start to finish.",
+      "Every Luxe Lake charter is built around white-glove planning, professional captains, and refined on-water hospitality worthy of the dates you reserve.",
     eyebrow: "The Luxe Lake Standard",
     quote: "The ultimate lakefront sanctuary.",
     title: "Unrivaled Safety, Comfort & Style",

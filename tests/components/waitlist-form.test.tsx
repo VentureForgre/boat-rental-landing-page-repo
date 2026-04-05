@@ -5,22 +5,25 @@ describe("WaitlistForm", () => {
     vi.unstubAllGlobals();
   });
 
-  it("renders the footer waitlist copy and supported lake options", async () => {
+  it("renders the footer offer copy and supported lake options", async () => {
     const { WaitlistForm } = await import("@/components/landing/waitlist-form");
 
     render(<WaitlistForm source="footer" />);
 
-    const submitButton = screen.getByRole("button", { name: /submit/i });
+    const submitButton = screen.getByRole("button", { name: /send offer details/i });
 
     expect(
       screen.getByRole("textbox", { name: /your email address/i }),
     ).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /get the \$200 offer/i })).toBeInTheDocument();
     expect(submitButton).toBeInTheDocument();
     expect(submitButton).toHaveClass("w-full");
     expect(
       screen.getByRole("combobox", { name: /select your lake/i }),
     ).toHaveDisplayValue(/lake sidney lanier/i);
-    expect(screen.getByText(/stay updated on launch dates/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/\$200 today for any 2 days offer details/i),
+    ).toBeInTheDocument();
   });
 
   it("shows a client-side validation message before posting invalid email", async () => {
@@ -36,14 +39,14 @@ describe("WaitlistForm", () => {
       screen.getByRole("combobox", { name: /select your lake/i }),
     ).toHaveClass("border-[var(--color-background)]");
     expect(
-      screen.getByRole("textbox", { name: /ready to book/i }),
+      screen.getByRole("textbox", { name: /ready to reserve/i }),
     ).toHaveClass("border-[var(--color-background)]");
 
-    fireEvent.change(screen.getByRole("textbox", { name: /ready to book/i }), {
+    fireEvent.change(screen.getByRole("textbox", { name: /ready to reserve/i }), {
       target: { value: "not-an-email" },
     });
     fireEvent.click(
-      screen.getByRole("button", { name: /join the waitlist/i }),
+      screen.getByRole("button", { name: /claim offer/i }),
     );
 
     expect(
@@ -69,11 +72,11 @@ describe("WaitlistForm", () => {
 
     render(<WaitlistForm source="hero" />);
 
-    fireEvent.change(screen.getByRole("textbox", { name: /ready to book/i }), {
+    fireEvent.change(screen.getByRole("textbox", { name: /ready to reserve/i }), {
       target: { value: "guest@example.com" },
     });
     fireEvent.click(
-      screen.getByRole("button", { name: /join the waitlist/i }),
+      screen.getByRole("button", { name: /claim offer/i }),
     );
 
     expect(

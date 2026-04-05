@@ -33,8 +33,14 @@ describe("Landing page composition", () => {
     const { container } = render(<HomePage />);
 
     expect(
-      screen.getByRole("link", { name: /join waitlist/i }),
+      screen.getByRole("link", { name: /claim today's offer/i }),
     ).toHaveAttribute("href", "#waitlist");
+    expect(
+      screen.getAllByText(/\$200 today for any 2 days/i).length,
+    ).toBeGreaterThan(0);
+    expect(
+      screen.getAllByText(/redeem it later for any two charter days you choose/i).length,
+    ).toBeGreaterThan(0);
     expect(
       screen.getByRole("heading", {
         level: 2,
@@ -71,7 +77,7 @@ describe("Landing page composition", () => {
     expect(
       screen.getByRole("heading", {
         level: 2,
-        name: /secure your launch priority/i,
+        name: /reserve any 2 charter days with \$200 today/i,
       }),
     ).toBeInTheDocument();
     expect(
@@ -88,16 +94,19 @@ describe("Landing page composition", () => {
       ),
     ).toBeInTheDocument();
     expect(
-      screen.getAllByText(new RegExp(`coming summer ${currentYear}`, "i")),
-    ).toHaveLength(2);
+      screen.getAllByText(/today's offer only/i).length,
+    ).toBeGreaterThan(0);
+    expect(
+      screen.getAllByText(/reserve any 2 charter days later/i).length,
+    ).toBeGreaterThan(0);
     expect(
       screen.getByText(new RegExp(`summer ${currentYear} launch fleet locations`, "i")),
     ).toBeInTheDocument();
     expect(screen.getAllByRole("combobox", { name: /select your lake/i })).toHaveLength(2);
     expect(
-      screen.getByRole("button", { name: /join the waitlist/i }),
+      screen.getByRole("button", { name: /claim offer/i }),
     ).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /submit/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /send offer details/i })).toBeInTheDocument();
     expect(
       container.querySelector('img[src*="AB6AXuA0T4Z2ypI0eBJgupQzvWlIf9-gSx5gm0BwhAWYj_KtpY-y0v_BoTq3Rta3qv4YFs0lefLx8FfMKr-HfmmTnqPjLcd6h6qBtiK79HlomyqG4oe1LYK0NBRSl6pbyNkn9XOMJtZP5CWruiMrzrxeqwyoftuto_9ZtvVtL9HAsjZF0ZXAXOsoD7tKqlsrJeIZ0vpHxHKncvmnHEEvSdP4mVGUnvzN4YzEA_nmWPiazYz2rXCXiwCgsuGbR_9ZaOQnxK4KuPpSl0g70so_"][loading="eager"]'),
     ).not.toBeNull();
