@@ -85,7 +85,7 @@ export function validateWaitlistSubmission(
     fieldErrors.source = "Form source must be hero, footer, or popup.";
   }
 
-  if (Object.keys(fieldErrors).length > 0) {
+  if (!source || Object.keys(fieldErrors).length > 0) {
     return {
       ok: false,
       message: "Please fix the highlighted fields and try again.",
