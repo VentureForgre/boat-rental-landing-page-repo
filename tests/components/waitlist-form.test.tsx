@@ -87,7 +87,7 @@ describe("WaitlistForm", () => {
       new Response(
         JSON.stringify({
           ok: true,
-          message: "You are on the Luxe Lake waitlist.",
+          message: "Check your inbox for the Luxe Lake offer details.",
         }),
         {
           status: 200,
@@ -99,27 +99,78 @@ describe("WaitlistForm", () => {
     );
 
     await waitFor(() => {
-      expect(fetchMock).toHaveBeenCalledWith(
-        "/api/waitlist",
-        expect.objectContaining({
-          method: "POST",
-          headers: {
-            "content-type": "application/json",
-          },
-          body: JSON.stringify({
-            email: "guest@example.com",
-            preferredLake: "lake-sidney-lanier",
-            source: "hero",
-          }),
-        }),
-      );
+      expect(fetchMock).toHaveBeenCalledTimes(1);
+    });
+
+    const [url, request] = fetchMock.mock.calls[0] as [string, RequestInit];
+
+    expect(url).toBe("/api/waitlist");
+    expect(request).toEqual(
+      expect.objectContaining({
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+      }),
+    );
+    expect(JSON.parse(request.body as string)).toEqual({
+      email: "guest@example.com",
+      preferredLake: "lake-sidney-lanier",
+      source: "hero",
     });
 
     expect(
-      await screen.findByText(/you are on the luxe lake waitlist/i),
+      await screen.findByText(/check your inbox for the luxe lake offer details/i),
     ).toBeInTheDocument();
     expect(screen.getByRole("status")).toHaveTextContent(
-      /you are on the luxe lake waitlist/i,
+      /check your inbox for the luxe lake offer details/i,
     );
+  });
+
+  it("surfaces server-side field errors without regressing the inline hero form", async () => {
+    const fetchMock = vi.fn().mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          ok: false,
+          message: "Please fix the highlighted fields and try again.",
+          fieldErrors: {
+            preferredLake: "Select one of the supported launch lakes.",
+          },
+        }),
+        {
+          status: 400,
+          headers: {
+            "content-type": "application/json",
+          },
+        },
+      ),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    const { WaitlistForm } = await import("@/components/landing/waitlist-form");
+
+    render(<WaitlistForm source="hero" />);
+
+    fireEvent.change(screen.getByRole("textbox", { name: /ready to reserve/i }), {
+      target: { value: "guest@example.com" },
+    });
+    fireEvent.click(
+      screen.getByRole("button", { name: /claim offer/i }),
+    );
+
+    expect(
+      await screen.findByText(/select one of the supported launch lakes/i),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("alert")).toHaveTextContent(
+      /please fix the highlighted fields and try again/i,
+    );
+    const [url, request] = fetchMock.mock.calls[0] as [string, RequestInit];
+
+    expect(url).toBe("/api/waitlist");
+    expect(JSON.parse(request.body as string)).toEqual({
+      email: "guest@example.com",
+      preferredLake: "lake-sidney-lanier",
+      source: "hero",
+    });
   });
 });

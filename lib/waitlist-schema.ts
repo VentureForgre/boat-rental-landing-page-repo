@@ -1,12 +1,12 @@
 import { lakeOptions, type LakeId, type WaitlistSource } from "@/content/landing-page";
 
-export const waitlistSourceOptions = ["hero", "footer"] as const;
+export const waitlistSourceOptions = ["hero", "footer", "popup"] as const;
 
 export type WaitlistFieldName = "email" | "preferredLake" | "source";
 
 export type WaitlistSubmission = {
   email: string;
-  preferredLake: LakeId;
+  preferredLake?: LakeId;
   source: WaitlistSource;
 };
 
@@ -55,27 +55,34 @@ export function validateWaitlistSubmission(
       fieldErrors: {
         email: "Enter a valid email address.",
         preferredLake: "Select one of the supported launch lakes.",
-        source: "Form source must be hero or footer.",
+        source: "Form source must be hero, footer, or popup.",
       },
     };
   }
 
   const email = typeof input.email === "string" ? input.email.trim() : "";
   const preferredLake =
-    typeof input.preferredLake === "string" ? input.preferredLake : "";
-  const source = typeof input.source === "string" ? input.source : "";
+    typeof input.preferredLake === "string" ? input.preferredLake : undefined;
+  const rawSource = typeof input.source === "string" ? input.source : "";
+  const source = isWaitlistSource(rawSource) ? rawSource : null;
   const fieldErrors: WaitlistFieldErrors = {};
+  const hasSupportedLake =
+    typeof preferredLake === "string" && supportedLakeIds.has(preferredLake as LakeId);
+  const requiresLake = source === null || source === "hero" || source === "footer";
 
   if (!emailPattern.test(email)) {
     fieldErrors.email = "Enter a valid email address.";
   }
 
-  if (!supportedLakeIds.has(preferredLake as LakeId)) {
+  if (
+    (requiresLake && !hasSupportedLake) ||
+    (source === "popup" && preferredLake && !hasSupportedLake)
+  ) {
     fieldErrors.preferredLake = "Select one of the supported launch lakes.";
   }
 
-  if (!isWaitlistSource(source)) {
-    fieldErrors.source = "Form source must be hero or footer.";
+  if (!source) {
+    fieldErrors.source = "Form source must be hero, footer, or popup.";
   }
 
   if (Object.keys(fieldErrors).length > 0) {
@@ -86,12 +93,17 @@ export function validateWaitlistSubmission(
     };
   }
 
+  const data: WaitlistSubmission = {
+    email,
+    source,
+  };
+
+  if (hasSupportedLake) {
+    data.preferredLake = preferredLake as LakeId;
+  }
+
   return {
     ok: true,
-    data: {
-      email,
-      preferredLake: preferredLake as LakeId,
-      source: source as WaitlistSource,
-    },
+    data,
   };
 }

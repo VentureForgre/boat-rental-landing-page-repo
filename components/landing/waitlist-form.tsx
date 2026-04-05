@@ -6,7 +6,7 @@ import {
   lakeOptions,
   waitlistSurfaceContent,
   type WaitlistSurface,
-  type WaitlistSource,
+  type WaitlistSurfaceSource,
 } from "@/content/landing-page";
 import {
   validateWaitlistSubmission,
@@ -17,7 +17,7 @@ import {
 type WaitlistFormProps = {
   className?: string;
   layout?: "inline" | "stacked";
-  source: WaitlistSource;
+  source: WaitlistSurfaceSource;
 };
 
 type SubmissionState = "idle" | "loading" | "success" | "error";

@@ -9,7 +9,7 @@ const waitlistEntries: WaitlistEntry[] = [];
 export async function saveWaitlistEntry(
   submission: WaitlistSubmission,
 ): Promise<WaitlistEntry> {
-  const entry = {
+  const entry: WaitlistEntry = {
     ...submission,
     submittedAt: new Date().toISOString(),
   };

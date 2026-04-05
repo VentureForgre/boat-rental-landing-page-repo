@@ -42,6 +42,37 @@ describe("POST /api/waitlist", () => {
     });
   });
 
+  it("returns popup success copy for popup leads without a lake", async () => {
+    saveWaitlistEntry.mockResolvedValue({
+      submittedAt: "2025-01-01T00:00:00.000Z",
+    });
+
+    const { POST } = await import("@/app/api/waitlist/route");
+
+    const response = await POST(
+      new Request("http://localhost/api/waitlist", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({
+          email: "popup@example.com",
+          source: "popup",
+        }),
+      }),
+    );
+
+    expect(response.status).toBe(200);
+    expect(await response.json()).toEqual({
+      ok: true,
+      message: expect.stringMatching(/30%\s*off|unlock/i),
+    });
+    expect(saveWaitlistEntry).toHaveBeenCalledWith({
+      email: "popup@example.com",
+      source: "popup",
+    });
+  });
+
   it("returns validation errors and skips persistence for invalid payloads", async () => {
     const { POST } = await import("@/app/api/waitlist/route");
 

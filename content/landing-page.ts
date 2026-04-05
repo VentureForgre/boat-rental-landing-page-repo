@@ -5,7 +5,8 @@ export type LakeId =
   | "j-strom-thurmond-lake"
   | "walter-f-george-lake";
 
-export type WaitlistSource = "hero" | "footer";
+export type WaitlistSource = "hero" | "footer" | "popup";
+export type WaitlistSurfaceSource = Exclude<WaitlistSource, "popup">;
 
 export type LandingIconName =
   | "badge"
@@ -55,7 +56,7 @@ export type WaitlistSurface = {
   emailLabel: string;
   emailPlaceholder: string;
   lakeLabel: string;
-  source: WaitlistSource;
+  source: WaitlistSurfaceSource;
   submitLabel: string;
   supportingText?: string;
   title?: string;
@@ -224,7 +225,7 @@ export const waitlistSurfaceContent = {
     source: "hero",
     submitLabel: "Claim Offer",
   },
-} satisfies Record<WaitlistSource, WaitlistSurface>;
+} satisfies Record<WaitlistSurfaceSource, WaitlistSurface>;
 
 export const offerPopupContent = {
   body:

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { offerPopupContent } from "@/content/landing-page";
 import { saveWaitlistEntry } from "@/lib/waitlist";
 import {
   validateWaitlistSubmission,
@@ -7,6 +8,12 @@ import {
 
 function jsonResponse(body: WaitlistResponse, status: number) {
   return NextResponse.json(body, { status });
+}
+
+function getSuccessMessage(source: "hero" | "footer" | "popup") {
+  return source === "popup"
+    ? offerPopupContent.successMessage
+    : "You are on the Luxe Lake waitlist.";
 }
 
 export async function POST(request: Request) {
@@ -36,7 +43,7 @@ export async function POST(request: Request) {
     return jsonResponse(
       {
         ok: true,
-        message: "You are on the Luxe Lake waitlist.",
+        message: getSuccessMessage(validation.data.source),
       },
       200,
     );
