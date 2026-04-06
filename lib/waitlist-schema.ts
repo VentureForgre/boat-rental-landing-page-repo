@@ -5,7 +5,7 @@ import {
   type WaitlistSource,
 } from "@/content/landing-page";
 
-export const waitlistSourceOptions = ["hero", "footer"] as const;
+export const waitlistSourceOptions = ["hero", "footer", "popup"] as const;
 export const conversionTypeOptions = ["deposit"] as const;
 export const referralCodePattern = /^[A-Z0-9]{8}$/;
 
@@ -20,9 +20,9 @@ export type ConversionType = LandingConversionType;
 
 export type WaitlistSubmission = {
   email: string;
-  preferredLake: LakeId;
+  preferredLake?: LakeId;
   source: WaitlistSource;
-  conversionType: ConversionType;
+  conversionType?: ConversionType;
   referralCode?: string;
 };
 
@@ -39,7 +39,7 @@ export type WaitlistValidationResult =
       fieldErrors: WaitlistFieldErrors;
     };
 
-export type WaitlistSuccessResponse = {
+export type WaitlistInlineSuccessResponse = {
   ok: true;
   message: string;
   conversionType: ConversionType;
@@ -47,8 +47,14 @@ export type WaitlistSuccessResponse = {
   shareUrl: string;
 };
 
+export type WaitlistPopupSuccessResponse = {
+  ok: true;
+  message: string;
+};
+
 export type WaitlistResponse =
-  | WaitlistSuccessResponse
+  | WaitlistInlineSuccessResponse
+  | WaitlistPopupSuccessResponse
   | {
       ok: false;
       message: string;
@@ -80,57 +86,69 @@ export function validateWaitlistSubmission(
       fieldErrors: {
         email: "Enter a valid email address.",
         preferredLake: "Select one of the supported launch lakes.",
-        source: "Form source must be hero or footer.",
-        conversionType: "Choose the refundable $25 deposit option.",
+        source: "Form source must be hero, footer, or popup.",
+        conversionType: "Choose the $200 deposit offer.",
       },
     };
   }
 
   const email = typeof input.email === "string" ? input.email.trim() : "";
   const preferredLake =
-    typeof input.preferredLake === "string" ? input.preferredLake : "";
-  const source = typeof input.source === "string" ? input.source : "";
-  const conversionType =
+    typeof input.preferredLake === "string" ? input.preferredLake : undefined;
+  const rawSource = typeof input.source === "string" ? input.source : "";
+  const source = isWaitlistSource(rawSource) ? rawSource : null;
+  const rawConversionType =
     typeof input.conversionType === "string" ? input.conversionType : "";
+  const conversionType = isConversionType(rawConversionType)
+    ? rawConversionType
+    : null;
   const rawReferralCode = input.referralCode;
   const referralCode =
     typeof rawReferralCode === "string"
       ? rawReferralCode.trim().toUpperCase()
       : undefined;
   const fieldErrors: WaitlistFieldErrors = {};
+  const hasSupportedLake =
+    typeof preferredLake === "string" &&
+    supportedLakeIds.has(preferredLake as LakeId);
+  const requiresLake =
+    source === null || source === "hero" || source === "footer";
+  const requiresConversionType =
+    source === null || source === "hero" || source === "footer";
 
   if (!emailPattern.test(email)) {
     fieldErrors.email = "Enter a valid email address.";
   }
 
-  if (!supportedLakeIds.has(preferredLake as LakeId)) {
+  if (
+    (requiresLake && !hasSupportedLake) ||
+    (source === "popup" && preferredLake && !hasSupportedLake)
+  ) {
     fieldErrors.preferredLake = "Select one of the supported launch lakes.";
   }
 
-  if (!isWaitlistSource(source)) {
-    fieldErrors.source = "Form source must be hero or footer.";
+  if (!source) {
+    fieldErrors.source = "Form source must be hero, footer, or popup.";
   }
 
-  if (!isConversionType(conversionType)) {
-    fieldErrors.conversionType = "Choose the refundable $25 deposit option.";
+  if (
+    (requiresConversionType && !conversionType) ||
+    (rawConversionType.length > 0 && !conversionType)
+  ) {
+    fieldErrors.conversionType = "Choose the $200 deposit offer.";
   }
 
   if (
     rawReferralCode !== undefined &&
-    referralCode !== undefined &&
-    referralCode.length > 0 &&
-    !referralCodePattern.test(referralCode)
+    (typeof rawReferralCode !== "string" ||
+      (referralCode !== undefined &&
+        referralCode.length > 0 &&
+        !referralCodePattern.test(referralCode)))
   ) {
-    fieldErrors.referralCode =
-      "Referral code must be 8 letters or numbers.";
+    fieldErrors.referralCode = "Referral code must be 8 letters or numbers.";
   }
 
-  if (rawReferralCode !== undefined && typeof rawReferralCode !== "string") {
-    fieldErrors.referralCode =
-      "Referral code must be 8 letters or numbers.";
-  }
-
-  if (Object.keys(fieldErrors).length > 0) {
+  if (!source || Object.keys(fieldErrors).length > 0) {
     return {
       ok: false,
       message: "Please fix the highlighted fields and try again.",
@@ -138,16 +156,25 @@ export function validateWaitlistSubmission(
     };
   }
 
+  const data: WaitlistSubmission = {
+    email,
+    source,
+  };
+
+  if (hasSupportedLake) {
+    data.preferredLake = preferredLake as LakeId;
+  }
+
+  if (conversionType) {
+    data.conversionType = conversionType;
+  }
+
+  if (referralCode && referralCodePattern.test(referralCode)) {
+    data.referralCode = referralCode;
+  }
+
   return {
     ok: true,
-    data: {
-      email,
-      preferredLake: preferredLake as LakeId,
-      source: source as WaitlistSource,
-      conversionType: conversionType as ConversionType,
-      ...(referralCode && referralCodePattern.test(referralCode)
-        ? { referralCode }
-        : {}),
-    },
+    data,
   };
 }

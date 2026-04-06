@@ -4,7 +4,7 @@ import {
   type WaitlistSubmission,
 } from "@/lib/waitlist-schema";
 
-const DEPOSIT_AMOUNT_CENTS = 2500;
+const DEPOSIT_AMOUNT_CENTS = 20000;
 
 export type DepositStatus = "pending";
 
@@ -45,14 +45,13 @@ export async function saveWaitlistEntry(
   const { referralCode: submittedReferralCode, ...baseSubmission } = submission;
   const referralCode = generateReferralCode();
   const referredByCode = resolveReferralAttribution(submittedReferralCode);
-  const entry = {
+
+  const entry: WaitlistEntry = {
     ...baseSubmission,
     id: randomUUID(),
     submittedAt: new Date().toISOString(),
     referralCode,
-    isReferral: Boolean(
-      referredByCode && referredByCode !== referralCode,
-    ),
+    isReferral: Boolean(referredByCode && referredByCode !== referralCode),
     ...(referredByCode && referredByCode !== referralCode
       ? { referredByCode }
       : {}),

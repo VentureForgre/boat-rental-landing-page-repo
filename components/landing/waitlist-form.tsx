@@ -8,11 +8,12 @@ import {
   lakeOptions,
   waitlistSurfaceContent,
   type WaitlistSurface,
-  type WaitlistSource,
+  type WaitlistSurfaceSource,
 } from "@/content/landing-page";
 import {
   validateWaitlistSubmission,
   type WaitlistFieldErrors,
+  type WaitlistInlineSuccessResponse,
   type WaitlistResponse,
 } from "@/lib/waitlist-schema";
 
@@ -20,7 +21,7 @@ type WaitlistFormProps = {
   className?: string;
   layout?: "inline" | "stacked";
   referralCode?: string;
-  source: WaitlistSource;
+  source: WaitlistSurfaceSource;
 };
 
 type SubmissionState = "idle" | "loading" | "success" | "error";
@@ -56,10 +57,8 @@ export function WaitlistForm({
   const [preferredLake, setPreferredLake] = useState<LakeId>(surface.defaultLakeId);
   const [status, setStatus] = useState<SubmissionState>("idle");
   const [message, setMessage] = useState<string | null>(null);
-  const [successResponse, setSuccessResponse] = useState<Extract<
-    WaitlistResponse,
-    { ok: true }
-  > | null>(null);
+  const [successResponse, setSuccessResponse] =
+    useState<WaitlistInlineSuccessResponse | null>(null);
   const [shareStatus, setShareStatus] = useState<ShareStatus>("idle");
   const [fieldErrors, setFieldErrors] = useState<WaitlistFieldErrors>({});
   const shareInputRef = useRef<HTMLInputElement>(null);
@@ -103,11 +102,17 @@ export function WaitlistForm({
       const payload = await readResponseMessage(response);
 
       if (!response.ok || !payload.ok) {
-        const fieldErrors = !payload.ok ? payload.fieldErrors ?? {} : {};
+        const nextFieldErrors = !payload.ok ? payload.fieldErrors ?? {} : {};
 
         setStatus("error");
-        setFieldErrors(fieldErrors);
+        setFieldErrors(nextFieldErrors);
         setMessage(payload.message);
+        return;
+      }
+
+      if (!("shareUrl" in payload)) {
+        setStatus("error");
+        setMessage("We could not process your request. Please try again.");
         return;
       }
 
@@ -253,7 +258,7 @@ export function WaitlistForm({
         disabled={status === "loading"}
         type="submit"
       >
-        {status === "loading" ? "Submitting..." : selectedChoice.submitLabel}
+        {status === "loading" ? "Submitting..." : surface.submitLabel}
       </button>
       {message ? (
         <p className={`${formMessageClassName} text-sm`} role={messageRole}>

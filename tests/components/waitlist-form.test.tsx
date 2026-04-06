@@ -6,7 +6,7 @@ describe("WaitlistForm", () => {
     vi.unstubAllGlobals();
   });
 
-  it("renders a compact hero deposit card without the long reservation-brief copy", async () => {
+  it("renders the compact hero offer card with the updated $200 messaging", async () => {
     const { WaitlistForm } = await import("@/components/landing/waitlist-form");
 
     render(<WaitlistForm source="hero" />);
@@ -14,73 +14,52 @@ describe("WaitlistForm", () => {
     const heroSection = screen
       .getByRole("heading", {
         level: 2,
-        name: /request a refundable \$25 deposit/i,
+        name: /reserve today with \$200 for any 2 days/i,
       })
       .closest("section");
     const heroButton = screen.getByRole("button", {
-      name: /request deposit priority/i,
+      name: /claim offer/i,
     });
 
     expect(
       screen.getByRole("heading", {
         level: 2,
-        name: /request a refundable \$25 deposit/i,
+        name: /reserve today with \$200 for any 2 days/i,
       }),
     ).toBeInTheDocument();
-    expect(screen.getByText(/priority access before the public launch calendar opens/i)).toBeInTheDocument();
     expect(
-      screen.queryByText(/100 deposits\. \$2,500\. louder than 1,000 free emails/i),
-    ).not.toBeInTheDocument();
-    expect(screen.queryByText(/referral proof/i)).not.toBeInTheDocument();
-    expect(screen.queryByText(/concierge follow-up/i)).not.toBeInTheDocument();
-    expect(
-      screen.getByRole("combobox", { name: /select your lake/i }),
+      screen.getByText(/claim the \$200 today for any 2 days offer now/i),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("textbox", { name: /ready to book/i }),
+      screen.getByRole("textbox", { name: /ready to reserve/i }),
     ).toBeInTheDocument();
     expect(heroSection?.className).not.toContain("rounded");
     expect(heroButton.className).not.toContain("rounded");
   });
 
-  it("keeps the footer form on the original simple layout with deposit copy", async () => {
+  it("renders the footer offer copy and supported lake options", async () => {
     const { WaitlistForm } = await import("@/components/landing/waitlist-form");
 
     render(<WaitlistForm source="footer" />);
 
     const footerButton = screen.getByRole("button", {
-      name: /request deposit priority/i,
+      name: /send offer details/i,
     });
     const footerLakeField = screen.getByRole("combobox", {
       name: /select your lake/i,
     });
 
     expect(
-      screen.queryByRole("radio", { name: /\$25 refundable deposit/i }),
-    ).not.toBeInTheDocument();
-    expect(
       screen.getByRole("heading", {
         level: 2,
-        name: /priority deposit request/i,
+        name: /get the \$200 offer/i,
       }),
     ).toBeInTheDocument();
-    expect(screen.getByText(/launch priority for lake sidney lanier/i)).toBeInTheDocument();
     expect(
-      screen.queryByText(/100 deposits\. \$2,500\. louder than 1,000 free emails/i),
-    ).not.toBeInTheDocument();
-    expect(screen.queryByText(/referral proof/i)).not.toBeInTheDocument();
-    expect(screen.queryByText(/concierge follow-up/i)).not.toBeInTheDocument();
-    expect(screen.queryByText(/reservation brief/i)).not.toBeInTheDocument();
-
-    expect(
-      screen.getByRole("textbox", { name: /your email address/i }),
+      screen.getByText(/today's \$200 for any 2 days offer/i),
     ).toBeInTheDocument();
     expect(footerButton).toHaveClass("bg-[var(--color-background)]");
-    expect(footerButton.className).not.toContain("rounded");
     expect(footerLakeField).toHaveDisplayValue(/lake sidney lanier/i);
-    expect(footerLakeField.className).toContain("rounded-none");
-    expect(screen.getByText(/choose the lake where concierge should prioritize your launch window/i)).toBeInTheDocument();
-    expect(screen.getByText(/concierge confirms the deposit collection after you submit/i)).toBeInTheDocument();
   });
 
   it("shows a client-side validation message before posting invalid email", async () => {
@@ -96,15 +75,13 @@ describe("WaitlistForm", () => {
       screen.getByRole("combobox", { name: /select your lake/i }),
     ).toHaveClass("border-[var(--color-background)]/15");
     expect(
-      screen.getByRole("textbox", { name: /ready to book/i }),
+      screen.getByRole("textbox", { name: /ready to reserve/i }),
     ).toHaveClass("border-[var(--color-background)]/15");
 
-    fireEvent.change(screen.getByRole("textbox", { name: /ready to book/i }), {
+    fireEvent.change(screen.getByRole("textbox", { name: /ready to reserve/i }), {
       target: { value: "not-an-email" },
     });
-    fireEvent.click(
-      screen.getByRole("button", { name: /request deposit priority/i }),
-    );
+    fireEvent.click(screen.getByRole("button", { name: /claim offer/i }));
 
     expect(
       await screen.findByText(/enter a valid email address/i),
@@ -115,7 +92,7 @@ describe("WaitlistForm", () => {
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
-  it("submits the deposit payload, including referral attribution, and shows share UI", async () => {
+  it("submits the offer payload, including referral attribution, and shows share UI", async () => {
     const writeTextMock = vi.fn().mockResolvedValue(undefined);
     Object.defineProperty(window.navigator, "clipboard", {
       configurable: true,
@@ -137,12 +114,10 @@ describe("WaitlistForm", () => {
 
     render(<WaitlistForm referralCode="AB12CD34" source="hero" />);
 
-    fireEvent.change(screen.getByRole("textbox", { name: /ready to book/i }), {
+    fireEvent.change(screen.getByRole("textbox", { name: /ready to reserve/i }), {
       target: { value: "guest@example.com" },
     });
-    fireEvent.click(
-      screen.getByRole("button", { name: /request deposit priority/i }),
-    );
+    fireEvent.click(screen.getByRole("button", { name: /claim offer/i }));
 
     expect(
       screen.getByRole("button", { name: /submitting/i }),
@@ -153,7 +128,7 @@ describe("WaitlistForm", () => {
         JSON.stringify({
           ok: true,
           message:
-            "Your $25 refundable priority request is in. Concierge follow-up comes next to finalize the deposit.",
+            "Your $200 for any 2 days request is in. Watch your inbox for concierge follow-up and your share link.",
           conversionType: "deposit",
           referralCode: "ZX98YU76",
           shareUrl: "https://luxelake.com/?ref=ZX98YU76",
@@ -168,35 +143,38 @@ describe("WaitlistForm", () => {
     );
 
     await waitFor(() => {
-      expect(fetchMock).toHaveBeenCalledWith(
-        "/api/waitlist",
-        expect.objectContaining({
-          method: "POST",
-          headers: {
-            "content-type": "application/json",
-          },
-          body: JSON.stringify({
-            email: "guest@example.com",
-            preferredLake: "lake-sidney-lanier",
-            source: "hero",
-            conversionType: "deposit",
-            referralCode: "AB12CD34",
-          }),
-        }),
-      );
+      expect(fetchMock).toHaveBeenCalledTimes(1);
+    });
+
+    const [url, request] = fetchMock.mock.calls[0] as [string, RequestInit];
+
+    expect(url).toBe("/api/waitlist");
+    expect(request).toEqual(
+      expect.objectContaining({
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+      }),
+    );
+    expect(JSON.parse(request.body as string)).toEqual({
+      email: "guest@example.com",
+      source: "hero",
+      preferredLake: "lake-sidney-lanier",
+      conversionType: "deposit",
+      referralCode: "AB12CD34",
     });
 
     expect(
-      await screen.findByText(/your \$25 refundable priority request is in/i),
+      await screen.findByText(/your \$200 for any 2 days request is in/i),
     ).toBeInTheDocument();
     expect(screen.getByRole("status")).toHaveTextContent(
-      /your \$25 refundable priority request is in/i,
+      /your \$200 for any 2 days request is in/i,
     );
     expect(screen.getByDisplayValue("https://luxelake.com/?ref=ZX98YU76")).toBeInTheDocument();
     expect(
-      screen.getByRole("heading", { level: 3, name: /keep the priority list moving/i }),
+      screen.getByRole("heading", { level: 3, name: /keep the charter calendar moving/i }),
     ).toBeInTheDocument();
-    expect(screen.queryByText(/100 deposits\. \$2,500\. louder than 1,000 free emails/i)).not.toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: /copy referral link/i }),
     ).toBeInTheDocument();
@@ -226,7 +204,7 @@ describe("WaitlistForm", () => {
       target: { value: "guest@example.com" },
     });
     fireEvent.click(
-      screen.getByRole("button", { name: /request deposit priority/i }),
+      screen.getByRole("button", { name: /send offer details/i }),
     );
 
     resolveFetch?.(
@@ -234,7 +212,7 @@ describe("WaitlistForm", () => {
         JSON.stringify({
           ok: true,
           message:
-            "Your $25 refundable priority request is in. Concierge follow-up comes next to finalize the deposit.",
+            "Your $200 for any 2 days request is in. Watch your inbox for concierge follow-up and your share link.",
           conversionType: "deposit",
           referralCode: "AB12CD34",
           shareUrl: "https://luxelake.com/?ref=AB12CD34",
@@ -255,7 +233,53 @@ describe("WaitlistForm", () => {
       screen.getByRole("button", { name: /copy link manually/i }),
     ).toBeInTheDocument();
     expect(
-      screen.getAllByText(/referral rate tracks what share of completed deposit requests/i).length,
-    ).toBeGreaterThan(0);
+      screen.getByText(/referral rate tracks what share of completed offer requests/i),
+    ).toBeInTheDocument();
+  });
+
+  it("surfaces server-side field errors without regressing the inline hero form", async () => {
+    const fetchMock = vi.fn().mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          ok: false,
+          message: "Please fix the highlighted fields and try again.",
+          fieldErrors: {
+            preferredLake: "Select one of the supported launch lakes.",
+          },
+        }),
+        {
+          status: 400,
+          headers: {
+            "content-type": "application/json",
+          },
+        },
+      ),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    const { WaitlistForm } = await import("@/components/landing/waitlist-form");
+
+    render(<WaitlistForm source="hero" />);
+
+    fireEvent.change(screen.getByRole("textbox", { name: /ready to reserve/i }), {
+      target: { value: "guest@example.com" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: /claim offer/i }));
+
+    expect(
+      await screen.findByText(/select one of the supported launch lakes/i),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("alert")).toHaveTextContent(
+      /please fix the highlighted fields and try again/i,
+    );
+    const [url, request] = fetchMock.mock.calls[0] as [string, RequestInit];
+
+    expect(url).toBe("/api/waitlist");
+    expect(JSON.parse(request.body as string)).toEqual({
+      email: "guest@example.com",
+      preferredLake: "lake-sidney-lanier",
+      source: "hero",
+      conversionType: "deposit",
+    });
   });
 });

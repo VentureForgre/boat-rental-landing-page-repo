@@ -1,7 +1,10 @@
 import { NextResponse } from "next/server";
+import { landingPageContent, offerPopupContent } from "@/content/landing-page";
 import { saveWaitlistEntry } from "@/lib/waitlist";
 import {
   validateWaitlistSubmission,
+  type WaitlistInlineSuccessResponse,
+  type WaitlistPopupSuccessResponse,
   type WaitlistResponse,
 } from "@/lib/waitlist-schema";
 
@@ -16,8 +19,8 @@ function buildShareUrl(requestUrl: string, referralCode: string) {
   return shareUrl.toString();
 }
 
-function getSuccessMessage() {
-  return "Your $25 refundable priority request is in. Concierge follow-up comes next to finalize the deposit.";
+function getInlineSuccessMessage() {
+  return landingPageContent.conversionFlow.choices[0].success.body;
 }
 
 export async function POST(request: Request) {
@@ -29,7 +32,7 @@ export async function POST(request: Request) {
     return jsonResponse(
       {
         ok: false,
-        message: "We could not read your deposit request. Please try again.",
+        message: "We could not read your request. Please try again.",
       },
       400,
     );
@@ -44,21 +47,33 @@ export async function POST(request: Request) {
   try {
     const entry = await saveWaitlistEntry(validation.data);
 
-    return jsonResponse(
-      {
+    if (validation.data.source === "popup") {
+      const responseBody: WaitlistPopupSuccessResponse = {
         ok: true,
-        message: getSuccessMessage(),
-        conversionType: entry.conversionType,
-        referralCode: entry.referralCode,
-        shareUrl: buildShareUrl(request.url, entry.referralCode),
-      },
-      200,
-    );
+        message: offerPopupContent.successMessage,
+      };
+
+      return jsonResponse(responseBody, 200);
+    }
+
+    if (!entry.conversionType) {
+      throw new Error("Inline submissions must include a conversion type.");
+    }
+
+    const responseBody: WaitlistInlineSuccessResponse = {
+      ok: true,
+      message: getInlineSuccessMessage(),
+      conversionType: entry.conversionType,
+      referralCode: entry.referralCode,
+      shareUrl: buildShareUrl(request.url, entry.referralCode),
+    };
+
+    return jsonResponse(responseBody, 200);
   } catch {
     return jsonResponse(
       {
         ok: false,
-        message: "We could not save your deposit request. Please try again.",
+        message: "We could not save your request. Please try again.",
       },
       500,
     );

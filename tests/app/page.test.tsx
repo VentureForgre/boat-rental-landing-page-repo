@@ -1,4 +1,4 @@
-import { render } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import HomePage from "@/app/page";
 
 const heroSectionSpy = vi.fn(
@@ -28,6 +28,10 @@ vi.mock("@/components/landing/lakes-section", () => ({
   LakesSection: () => <section data-testid="lakes-section" />,
 }));
 
+vi.mock("@/components/landing/offer-popup", () => ({
+  OfferPopup: () => <div data-testid="offer-popup" />,
+}));
+
 vi.mock("@/components/landing/site-footer", () => ({
   SiteFooter: (props: { referralCode?: string }) => siteFooterSpy(props),
 }));
@@ -43,6 +47,7 @@ describe("HomePage", () => {
 
     expect(heroSectionSpy.mock.calls[0]?.[0]).toEqual({ referralCode: "AB12CD34" });
     expect(siteFooterSpy.mock.calls[0]?.[0]).toEqual({ referralCode: "AB12CD34" });
+    expect(screen.getByTestId("offer-popup")).toBeInTheDocument();
   });
 
   it("uses the first valid referral code from repeated query params and ignores invalid values", async () => {

@@ -9,7 +9,7 @@ describe("POST /api/waitlist", () => {
     saveWaitlistEntry.mockReset();
   });
 
-  it("returns a success response for valid deposit submissions", async () => {
+  it("returns a success response for valid inline offer submissions", async () => {
     saveWaitlistEntry.mockResolvedValue({
       id: "entry-2",
       email: "guest@example.com",
@@ -19,7 +19,7 @@ describe("POST /api/waitlist", () => {
       referralCode: "ZX98YU76",
       referredByCode: "AB12CD34",
       isReferral: true,
-      depositAmountCents: 2500,
+      depositAmountCents: 20000,
       depositStatus: "pending",
       submittedAt: "2025-01-01T00:00:00.000Z",
     });
@@ -45,7 +45,7 @@ describe("POST /api/waitlist", () => {
     expect(response.status).toBe(200);
     expect(await response.json()).toEqual({
       ok: true,
-      message: expect.stringMatching(/priority request is in|concierge follow-up/i),
+      message: expect.stringMatching(/\$200|share link|concierge/i),
       conversionType: "deposit",
       referralCode: "ZX98YU76",
       shareUrl: "http://localhost/?ref=ZX98YU76",
@@ -59,7 +59,43 @@ describe("POST /api/waitlist", () => {
     });
   });
 
-  it("returns validation errors for legacy waitlist and malformed referral payloads", async () => {
+  it("returns popup success copy for popup leads without a lake", async () => {
+    saveWaitlistEntry.mockResolvedValue({
+      id: "entry-popup",
+      email: "popup@example.com",
+      source: "popup",
+      referralCode: "ZX98YU76",
+      isReferral: false,
+      submittedAt: "2025-01-01T00:00:00.000Z",
+    });
+
+    const { POST } = await import("@/app/api/waitlist/route");
+
+    const response = await POST(
+      new Request("http://localhost/api/waitlist", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({
+          email: "popup@example.com",
+          source: "popup",
+        }),
+      }),
+    );
+
+    expect(response.status).toBe(200);
+    expect(await response.json()).toEqual({
+      ok: true,
+      message: expect.stringMatching(/30%\s*off|unlock/i),
+    });
+    expect(saveWaitlistEntry).toHaveBeenCalledWith({
+      email: "popup@example.com",
+      source: "popup",
+    });
+  });
+
+  it("returns validation errors for malformed payloads", async () => {
     const { POST } = await import("@/app/api/waitlist/route");
 
     const response = await POST(

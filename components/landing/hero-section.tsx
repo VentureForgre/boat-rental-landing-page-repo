@@ -39,7 +39,7 @@ export function HeroSection({ referralCode }: HeroSectionProps) {
         <div className="max-w-4xl space-y-8">
           <p className="eyebrow">{landingPageContent.hero.eyebrow}</p>
           <h1 className="text-4xl leading-[0.95] text-white sm:text-6xl lg:text-8xl">
-            The Art of <br />
+            {landingPageContent.hero.headline} <br />
             <span className="italic">{landingPageContent.hero.headlineAccent}</span>
           </h1>
           <p className="mx-auto max-w-2xl text-lg leading-8 text-slate-200 sm:text-xl">
