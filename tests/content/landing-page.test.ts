@@ -63,7 +63,10 @@ describe("landing-page content", () => {
     expect(walterFGeorge?.imageSrc).toMatch(/^https:\/\/images\.pexels\.com\//);
   });
 
-  it("centers the page around the new deposit offer and popup campaign copy", () => {
+  it("centers the page around the $200 offer while preserving referral-share follow-up", () => {
+    const conversionFlow = landingPageContent.conversionFlow;
+    const depositChoice = conversionFlow.choices[0];
+
     expect(landingPageContent.hero.eyebrow).toMatch(/today/i);
     expect(landingPageContent.hero.description).toMatch(/\$200/i);
     expect(landingPageContent.hero.description).toMatch(/any 2 days|any two days/i);
@@ -71,7 +74,15 @@ describe("landing-page content", () => {
     expect(landingPageContent.closingCta.title).toMatch(/\$200/i);
     expect(landingPageContent.closingCta.body).toMatch(/redeem/i);
     expect(landingPageContent.brand.summary).not.toMatch(/waitlist/i);
-    expect(benefitCards.some((card) => /waitlist/i.test(card.description))).toBe(false);
+    expect(benefitCards.some((card) => /\$25|waitlist/i.test(card.description))).toBe(false);
+
+    expect(conversionFlow.choices).toHaveLength(1);
+    expect(depositChoice.id).toBe("deposit");
+    expect(depositChoice.label).toMatch(/\$200/i);
+    expect(depositChoice.submitLabel).toMatch(/claim offer/i);
+    expect(depositChoice.success.body).toMatch(/\$200/i);
+    expect(conversionFlow.referralShare.title).toMatch(/share/i);
+    expect(conversionFlow.referralShare.helperText).toMatch(/offer requests/i);
 
     expect(offerPopupContent.headline).toMatch(/30% off/i);
     expect(offerPopupContent.body).toMatch(/\$200/i);

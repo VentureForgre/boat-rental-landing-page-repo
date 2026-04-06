@@ -1,80 +1,71 @@
-import type { ComponentPropsWithoutRef } from "react";
-import { act, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import HomePage from "@/app/page";
 
-vi.mock("next/image", () => ({
-  default: (props: ComponentPropsWithoutRef<"img"> & { priority?: boolean }) => {
-    const { alt = "", priority, ...rest } = props;
-    void priority;
+const heroSectionSpy = vi.fn(
+  ({ referralCode }: { referralCode?: string }) => (
+    <section data-testid="hero-section">{referralCode ?? "no-referral"}</section>
+  ),
+);
+const siteFooterSpy = vi.fn(
+  ({ referralCode }: { referralCode?: string }) => (
+    <footer data-testid="site-footer">{referralCode ?? "no-referral"}</footer>
+  ),
+);
 
-    // eslint-disable-next-line @next/next/no-img-element
-    return <img alt={alt} {...rest} />;
-  },
+vi.mock("@/components/landing/benefits-section", () => ({
+  BenefitsSection: () => <section data-testid="benefits-section" />,
 }));
 
-function stubMatchMedia() {
-  vi.stubGlobal(
-    "matchMedia",
-    vi.fn((query: string) => ({
-      addEventListener: vi.fn(),
-      addListener: vi.fn(),
-      dispatchEvent: vi.fn(),
-      matches: query === "(hover: hover) and (pointer: fine)",
-      media: query,
-      onchange: null,
-      removeEventListener: vi.fn(),
-      removeListener: vi.fn(),
-    })),
-  );
-}
+vi.mock("@/components/landing/cta-section", () => ({
+  CtaSection: () => <section data-testid="cta-section" />,
+}));
 
-async function advance(ms: number) {
-  await act(async () => {
-    await vi.advanceTimersByTimeAsync(ms);
-  });
-}
+vi.mock("@/components/landing/hero-section", () => ({
+  HeroSection: (props: { referralCode?: string }) => heroSectionSpy(props),
+}));
+
+vi.mock("@/components/landing/lakes-section", () => ({
+  LakesSection: () => <section data-testid="lakes-section" />,
+}));
+
+vi.mock("@/components/landing/offer-popup", () => ({
+  OfferPopup: () => <div data-testid="offer-popup" />,
+}));
+
+vi.mock("@/components/landing/site-footer", () => ({
+  SiteFooter: (props: { referralCode?: string }) => siteFooterSpy(props),
+}));
 
 describe("HomePage", () => {
   beforeEach(() => {
-    vi.useFakeTimers();
-    stubMatchMedia();
-    localStorage.clear();
-    sessionStorage.clear();
+    heroSectionSpy.mockClear();
+    siteFooterSpy.mockClear();
   });
 
-  afterEach(() => {
-    vi.useRealTimers();
-    vi.unstubAllGlobals();
+  it("passes a normalized referral code into both landing page conversion surfaces", async () => {
+    render(await HomePage({ searchParams: Promise.resolve({ ref: " ab12cd34 " }) }));
+
+    expect(heroSectionSpy.mock.calls[0]?.[0]).toEqual({ referralCode: "AB12CD34" });
+    expect(siteFooterSpy.mock.calls[0]?.[0]).toEqual({ referralCode: "AB12CD34" });
+    expect(screen.getByTestId("offer-popup")).toBeInTheDocument();
   });
 
-  it("renders the hero headline for the landing page", () => {
-    render(<HomePage />);
-
-    expect(
-      screen.getByRole("heading", {
-        level: 1,
-        name: /reserve today \$200 for any 2 days/i,
+  it("uses the first valid referral code from repeated query params and ignores invalid values", async () => {
+    const { rerender } = render(
+      await HomePage({
+        searchParams: Promise.resolve({ ref: ["bad-ref", " zx98yu76 "] }),
       }),
-    ).toBeInTheDocument();
-  });
+    );
 
-  it("mounts the offer popup at page scope and opens it after the configured delay", async () => {
-    render(<HomePage />);
+    expect(heroSectionSpy.mock.calls[0]?.[0]).toEqual({ referralCode: "ZX98YU76" });
+    expect(siteFooterSpy.mock.calls[0]?.[0]).toEqual({ referralCode: "ZX98YU76" });
 
-    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    heroSectionSpy.mockClear();
+    siteFooterSpy.mockClear();
 
-    await advance(6000);
+    rerender(await HomePage({ searchParams: Promise.resolve({ ref: "not-valid" }) }));
 
-    expect(
-      screen.getByRole("dialog", {
-        name: /unlock 30% off your luxe lake charter/i,
-      }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("heading", {
-        level: 1,
-        name: /reserve today \$200 for any 2 days/i,
-      }),
-    ).toBeInTheDocument();
+    expect(heroSectionSpy.mock.calls[0]?.[0]).toEqual({ referralCode: undefined });
+    expect(siteFooterSpy.mock.calls[0]?.[0]).toEqual({ referralCode: undefined });
   });
 });

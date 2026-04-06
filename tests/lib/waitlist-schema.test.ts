@@ -1,13 +1,17 @@
 describe("validateWaitlistSubmission", () => {
-  it("accepts a supported lake and trims the email address", async () => {
-    const { validateWaitlistSubmission, waitlistSourceOptions } = await import(
-      "@/lib/waitlist-schema"
-    );
+  it("accepts inline offer submissions and normalizes the referral code", async () => {
+    const {
+      conversionTypeOptions,
+      validateWaitlistSubmission,
+      waitlistSourceOptions,
+    } = await import("@/lib/waitlist-schema");
 
     const result = validateWaitlistSubmission({
       email: "  guest@example.com  ",
       preferredLake: "lake-sidney-lanier",
       source: "hero",
+      conversionType: "deposit",
+      referralCode: " ab12cd34 ",
     });
 
     expect(result).toEqual({
@@ -16,12 +20,15 @@ describe("validateWaitlistSubmission", () => {
         email: "guest@example.com",
         preferredLake: "lake-sidney-lanier",
         source: "hero",
+        conversionType: "deposit",
+        referralCode: "AB12CD34",
       },
     });
+    expect(conversionTypeOptions).toEqual(["deposit"]);
     expect(waitlistSourceOptions).toEqual(["hero", "footer", "popup"]);
   });
 
-  it("accepts popup submissions without a lake selection", async () => {
+  it("accepts popup submissions without a lake selection or conversion type", async () => {
     const { validateWaitlistSubmission } = await import(
       "@/lib/waitlist-schema"
     );
@@ -40,7 +47,7 @@ describe("validateWaitlistSubmission", () => {
     });
   });
 
-  it("requires hero and footer submissions to include a supported lake", async () => {
+  it("requires hero and footer submissions to include a supported lake and the offer type", async () => {
     const { validateWaitlistSubmission } = await import(
       "@/lib/waitlist-schema"
     );
@@ -55,11 +62,12 @@ describe("validateWaitlistSubmission", () => {
       message: expect.stringMatching(/fix/i),
       fieldErrors: {
         preferredLake: expect.stringMatching(/select/i),
+        conversionType: expect.stringMatching(/\$200 deposit offer/i),
       },
     });
   });
 
-  it("rejects unsupported lakes and invalid email addresses", async () => {
+  it("rejects invalid sources, malformed emails, bad lakes, and malformed referral codes", async () => {
     const { validateWaitlistSubmission } = await import(
       "@/lib/waitlist-schema"
     );
@@ -68,6 +76,8 @@ describe("validateWaitlistSubmission", () => {
       email: "captain-at-luxelake.com",
       preferredLake: "lake-oconee",
       source: "sidebar",
+      conversionType: "waitlist",
+      referralCode: "bad-ref",
     });
 
     expect(result).toMatchObject({
@@ -77,6 +87,8 @@ describe("validateWaitlistSubmission", () => {
         email: expect.stringMatching(/valid email/i),
         preferredLake: expect.stringMatching(/select/i),
         source: expect.stringMatching(/hero|footer|popup/i),
+        conversionType: expect.stringMatching(/\$200 deposit offer/i),
+        referralCode: expect.stringMatching(/referral code/i),
       },
     });
   });

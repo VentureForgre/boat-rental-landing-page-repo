@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server";
-import { offerPopupContent } from "@/content/landing-page";
+import { landingPageContent, offerPopupContent } from "@/content/landing-page";
 import { saveWaitlistEntry } from "@/lib/waitlist";
 import {
   validateWaitlistSubmission,
+  type WaitlistInlineSuccessResponse,
+  type WaitlistPopupSuccessResponse,
   type WaitlistResponse,
 } from "@/lib/waitlist-schema";
 
@@ -10,10 +12,15 @@ function jsonResponse(body: WaitlistResponse, status: number) {
   return NextResponse.json(body, { status });
 }
 
-function getSuccessMessage(source: "hero" | "footer" | "popup") {
-  return source === "popup"
-    ? offerPopupContent.successMessage
-    : "You are on the Luxe Lake waitlist.";
+function buildShareUrl(requestUrl: string, referralCode: string) {
+  const shareUrl = new URL("/", requestUrl);
+  shareUrl.searchParams.set("ref", referralCode);
+
+  return shareUrl.toString();
+}
+
+function getInlineSuccessMessage() {
+  return landingPageContent.conversionFlow.choices[0].success.body;
 }
 
 export async function POST(request: Request) {
@@ -25,7 +32,7 @@ export async function POST(request: Request) {
     return jsonResponse(
       {
         ok: false,
-        message: "We could not read your waitlist request. Please try again.",
+        message: "We could not read your request. Please try again.",
       },
       400,
     );
@@ -38,20 +45,35 @@ export async function POST(request: Request) {
   }
 
   try {
-    await saveWaitlistEntry(validation.data);
+    const entry = await saveWaitlistEntry(validation.data);
 
-    return jsonResponse(
-      {
+    if (validation.data.source === "popup") {
+      const responseBody: WaitlistPopupSuccessResponse = {
         ok: true,
-        message: getSuccessMessage(validation.data.source),
-      },
-      200,
-    );
+        message: offerPopupContent.successMessage,
+      };
+
+      return jsonResponse(responseBody, 200);
+    }
+
+    if (!entry.conversionType) {
+      throw new Error("Inline submissions must include a conversion type.");
+    }
+
+    const responseBody: WaitlistInlineSuccessResponse = {
+      ok: true,
+      message: getInlineSuccessMessage(),
+      conversionType: entry.conversionType,
+      referralCode: entry.referralCode,
+      shareUrl: buildShareUrl(request.url, entry.referralCode),
+    };
+
+    return jsonResponse(responseBody, 200);
   } catch {
     return jsonResponse(
       {
         ok: false,
-        message: "We could not save your waitlist request. Please try again.",
+        message: "We could not save your request. Please try again.",
       },
       500,
     );

@@ -8,7 +8,11 @@ const socialIconMap = {
   share: ShareIcon,
 } as const;
 
-export function SiteFooter() {
+type SiteFooterProps = {
+  referralCode?: string;
+};
+
+export function SiteFooter({ referralCode }: SiteFooterProps) {
   return (
     <footer
       className="relative z-10 border-t border-luxury px-6 pb-12 pt-20 lg:px-8"
@@ -76,7 +80,7 @@ export function SiteFooter() {
             </div>
           </section>
           <section>
-            <WaitlistForm layout="stacked" source="footer" />
+            <WaitlistForm layout="stacked" referralCode={referralCode} source="footer" />
           </section>
         </div>
         <div className="border-t border-luxury pt-10 text-center">
