@@ -21,7 +21,7 @@ function LakeCard({
     <article className={`group relative overflow-hidden rounded-sm ${className ?? ""}`}>
       <Image
         alt={alt}
-        className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
+        className="h-full w-full object-cover transition duration-700 ease-[var(--ease-smooth-out)] group-hover:scale-105"
         height={900}
         src={imageSrc}
         width={1200}
