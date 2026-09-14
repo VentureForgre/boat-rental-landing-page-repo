@@ -188,8 +188,8 @@ export function WaitlistForm({
       : "inline-flex w-full items-center justify-center bg-[var(--color-background)] px-6 py-3 text-xs font-semibold uppercase tracking-[0.2em] text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-70";
   const sharePanelClassName =
     source === "hero"
-      ? "space-y-3 border border-emerald-200 bg-emerald-50/95 p-4 text-slate-900"
-      : "space-y-3 border border-emerald-300/30 bg-emerald-500/10 p-4 text-white";
+      ? "reveal-content space-y-3 border border-emerald-200 bg-emerald-50/95 p-4 text-slate-900"
+      : "reveal-content space-y-3 border border-emerald-300/30 bg-emerald-500/10 p-4 text-white";
   const shareButtonLabel = canCopyReferralLink
     ? shareStatus === "copied"
       ? "Copied link"

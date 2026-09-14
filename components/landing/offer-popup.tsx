@@ -308,7 +308,7 @@ export function OfferPopup() {
 
   return (
     <div
-      className="fixed inset-0 z-[70] flex items-center justify-center bg-[rgba(10,18,30,0.72)] px-4 py-6"
+      className="animate-modal-backdrop-in fixed inset-0 z-[70] flex items-center justify-center bg-[rgba(10,18,30,0.72)] px-4 py-6"
       onClick={(event) => {
         if (event.target === event.currentTarget) {
           closePopup("dismiss");
@@ -319,7 +319,7 @@ export function OfferPopup() {
         aria-describedby={bodyId}
         aria-labelledby={headingId}
         aria-modal="true"
-        className="luxury-panel topo-pattern relative w-full max-w-xl overflow-hidden border border-white/10 p-6 text-left shadow-[0_28px_100px_rgba(0,0,0,0.5)] sm:p-8"
+        className="animate-modal-in luxury-panel topo-pattern relative w-full max-w-xl overflow-hidden border border-white/10 p-6 text-left shadow-[0_28px_100px_rgba(0,0,0,0.5)] sm:p-8"
         role="dialog"
       >
         <button
@@ -342,7 +342,7 @@ export function OfferPopup() {
           </div>
 
           {status === "success" ? (
-            <div className="space-y-4 border border-[rgba(193,164,126,0.22)] bg-white/5 p-5">
+            <div className="reveal-content space-y-4 border border-[rgba(193,164,126,0.22)] bg-white/5 p-5">
               <p className="eyebrow">Offer Reserved</p>
               <p className="text-base leading-7 text-white" role="status">
                 {message ?? offerPopupContent.successMessage}

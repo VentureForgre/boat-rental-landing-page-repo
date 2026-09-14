@@ -14,6 +14,32 @@
   --color-accent-strong: #a18a6a;
   --color-border: rgba(255, 255, 255, 0.1);
   --shadow-luxury: 0 24px 80px rgba(0, 0, 0, 0.35);
+  /* Motion tokens (transitions.dev scale) */
+  --duration-stagger: 40ms;
+  --duration-micro: 80ms;
+  --duration-quick: 150ms;
+  --duration-fast: 250ms;
+  --duration-medium: 350ms;
+  --duration-slow: 400ms;
+  --duration-very-slow: 500ms;
+  --ease-smooth-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: ease-in-out;
+  --ease-out: ease-out;
+  --ease-linear: linear;
+  --ease-bounce: cubic-bezier(0.34, 1.36, 0.64, 1);
+  --ease-bounce-strong: cubic-bezier(0.34, 3.85, 0.64, 1);
+  --distance-micro: 4px;
+  --distance-small: 6px;
+  --distance-base: 8px;
+  --distance-medium: 12px;
+  --distance-large: 30px;
+  --scale-large: 0.96;
+  --scale-medium: 0.97;
+  --scale-small: 0.98;
+  --scale-tiny: 0.99;
+  --blur-small: 2px;
+  --blur-medium: 3px;
+  --blur-large: 8px;
   --topo-pattern: url("data:image/svg+xml,%3Csvg width='800' height='800' viewBox='0 0 800 800' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M100 100C150 150 200 120 250 180S350 220 400 150 500 100 600 200 700 300 750 250' fill='none' stroke='rgba(193, 164, 126, 0.1)' stroke-width='1'/%3E%3Cpath d='M50 200C100 250 150 220 200 280S300 320 350 250 450 200 550 300 650 400 700 350' fill='none' stroke='rgba(193, 164, 126, 0.08)' stroke-width='1'/%3E%3Cpath d='M0 300C50 350 100 320 150 380S250 420 300 350 400 300 500 400 600 500 650 450' fill='none' stroke='rgba(193, 164, 126, 0.05)' stroke-width='1'/%3E%3Cpath d='M200 500C250 550 300 520 350 580S450 620 500 550 600 500 700 600 800 700 850 650' fill='none' stroke='rgba(193, 164, 126, 0.08)' stroke-width='1'/%3E%3C/svg%3E");
 }
 
@@ -115,6 +141,82 @@ h6,
     letter-spacing: 0.3em;
     text-transform: uppercase;
   }
+
+  .animate-modal-backdrop-in {
+    animation: fade-in var(--duration-fast) var(--ease-smooth-out) both;
+  }
+
+  .animate-modal-in {
+    animation: modal-in var(--duration-fast) var(--ease-smooth-out) both;
+  }
+
+  .animate-dropdown-in {
+    transform-origin: top;
+    animation: dropdown-in var(--duration-fast) var(--ease-smooth-out) both;
+  }
+
+  .reveal-content {
+    animation: content-reveal var(--duration-slow) var(--ease-in-out) both;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modal-in {
+  from {
+    opacity: 0;
+    transform: scale(var(--scale-large));
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes dropdown-in {
+  from {
+    opacity: 0;
+    transform: scale(var(--scale-medium));
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes content-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(var(--distance-medium));
+    filter: blur(var(--blur-medium));
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 .skip-link {
@@ -130,7 +232,7 @@ h6,
   letter-spacing: 0.18em;
   text-transform: uppercase;
   transform: translateY(-220%);
-  transition: transform 150ms ease;
+  transition: transform var(--duration-quick) var(--ease-smooth-out);
 }
 
 .skip-link:focus-visible {

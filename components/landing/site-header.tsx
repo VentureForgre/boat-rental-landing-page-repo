@@ -85,7 +85,7 @@ export function SiteHeader() {
       {isMenuOpen ? (
         <div
           aria-label="Mobile navigation"
-          className="luxury-panel mt-4 rounded-sm p-5 md:hidden"
+          className="animate-dropdown-in luxury-panel mt-4 rounded-sm p-5 md:hidden"
           id={menuId}
           role="dialog"
         >
